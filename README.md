@@ -11,4 +11,6 @@ The only things that I didn't get done was to finish 2 buttons that edit the ASA
 The manager also has a builtin auto restart server if the server ever crashes.
 Due to wildcard releasing a update that made it so you can't change the ports it's listing on the manager uses the default ports of 7777 and 27015
 
+## The EXE file was built in c++/cli .Net framework v4.7.2
+
 # The Files that are in the Github are not the same as the download ASA Server Manager link that I have posted and are the new files for a rebuilt version!
