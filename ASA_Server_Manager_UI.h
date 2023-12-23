@@ -40,52 +40,35 @@ namespace ASAServerManager {
 	private: System::Windows::Forms::Label^ ASA_Server_Crashed_Log_label;
 	private: System::Windows::Forms::ListBox^ Displayed_Server_Crash_Logs;
 	private: System::Windows::Forms::ListBox^ Displayed_Manager_Status;
-
-
 	private: System::Windows::Forms::Label^ Manager_Status_label;
 	private: System::Windows::Forms::ProgressBar^ Server_Crashed_Check_progressBar;
 	private: System::Windows::Forms::Label^ Server_Crashed_Check_label;
-
-
-	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Button^ Save_ASA_Manager_Config_button;
 	private: System::Windows::Forms::Button^ Install_Update_ASA_Server_button;
-
-
 	private: System::Windows::Forms::Button^ Create_ASA_Server_Backup_Files_button;
-
 	private: System::Windows::Forms::Button^ Edit_GameUserSettings_ini_file_button;
-
 	private: System::Windows::Forms::Button^ Edit_Game_ini_file_button;
-
 	private: System::Windows::Forms::Button^ Donate_button;
-
 	private: System::Windows::Forms::TextBox^ Mods_textBox;
-
 	private: System::Windows::Forms::Label^ Server_Install_Folder_label;
 	private: System::Windows::Forms::TextBox^ Server_Install_Folder_textBox;
-
 	private: System::Windows::Forms::Label^ Server_Name_label;
 	private: System::Windows::Forms::TextBox^ Server_Name_textBox;
-
 	private: System::Windows::Forms::Label^ Mods_label;
 	private: System::Windows::Forms::Label^ Server_Password_label;
 	private: System::Windows::Forms::TextBox^ Server_Password_textBox;
 	private: System::Windows::Forms::ComboBox^ Map_comboBox;
-
 	private: System::Windows::Forms::Label^ Map_label;
 	private: System::Windows::Forms::Label^ Max_players_label;
 	private: System::Windows::Forms::TextBox^ Max_Players_textBox;
 	private: System::Windows::Forms::Label^ Anti_Cheat_label;
-
-
 	private: System::Windows::Forms::ComboBox^ Anti_Cheat_comboBox;
 	private: System::Windows::Forms::Label^ Crossplay_label;
 	private: System::Windows::Forms::ComboBox^ Crossplay_comboBox;
-
 	private: System::Windows::Forms::Label^ Admin_Password_label;
 	private: System::Windows::Forms::TextBox^ Admin_Password_textBox;
 	private: System::Windows::Forms::Label^ RCON_Enable_label;
-	private: System::Windows::Forms::ComboBox^ comboBox1;
+	private: System::Windows::Forms::ComboBox^ RCON_Enable_comboBox;
 	private: System::Windows::Forms::Label^ RCON_Port_label;
 	private: System::Windows::Forms::TextBox^ RCON_Port_textBox;
 	private: System::Windows::Forms::Label^ Adding_Mods_Info_label;
@@ -93,21 +76,14 @@ namespace ASAServerManager {
 	private: System::Windows::Forms::Button^ Turkey_Triales_button;
 	private: System::Windows::Forms::Label^ Add_ASA_Events_label;
 	private: System::Windows::Forms::Button^ Winter_Wonderland_button;
-
-
-
-
-
-
-
-
+	private: System::Windows::Forms::Button^ Browse_button;
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
-#pragma region Windows Form Designer generated code
+		#pragma region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -123,7 +99,7 @@ namespace ASAServerManager {
 			this->Manager_Status_label = (gcnew System::Windows::Forms::Label());
 			this->Server_Crashed_Check_progressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->Server_Crashed_Check_label = (gcnew System::Windows::Forms::Label());
-			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->Save_ASA_Manager_Config_button = (gcnew System::Windows::Forms::Button());
 			this->Install_Update_ASA_Server_button = (gcnew System::Windows::Forms::Button());
 			this->Create_ASA_Server_Backup_Files_button = (gcnew System::Windows::Forms::Button());
 			this->Edit_GameUserSettings_ini_file_button = (gcnew System::Windows::Forms::Button());
@@ -148,7 +124,7 @@ namespace ASAServerManager {
 			this->Admin_Password_label = (gcnew System::Windows::Forms::Label());
 			this->Admin_Password_textBox = (gcnew System::Windows::Forms::TextBox());
 			this->RCON_Enable_label = (gcnew System::Windows::Forms::Label());
-			this->comboBox1 = (gcnew System::Windows::Forms::ComboBox());
+			this->RCON_Enable_comboBox = (gcnew System::Windows::Forms::ComboBox());
 			this->RCON_Port_label = (gcnew System::Windows::Forms::Label());
 			this->RCON_Port_textBox = (gcnew System::Windows::Forms::TextBox());
 			this->Adding_Mods_Info_label = (gcnew System::Windows::Forms::Label());
@@ -156,6 +132,7 @@ namespace ASAServerManager {
 			this->Turkey_Triales_button = (gcnew System::Windows::Forms::Button());
 			this->Add_ASA_Events_label = (gcnew System::Windows::Forms::Label());
 			this->Winter_Wonderland_button = (gcnew System::Windows::Forms::Button());
+			this->Browse_button = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// Stop_Server_button
@@ -244,16 +221,16 @@ namespace ASAServerManager {
 			this->Server_Crashed_Check_label->TabIndex = 9;
 			this->Server_Crashed_Check_label->Text = L"Server Crashed Check";
 			// 
-			// button1
+			// Save_ASA_Manager_Config_button
 			// 
-			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->button1->Location = System::Drawing::Point(12, 417);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(140, 23);
-			this->button1->TabIndex = 10;
-			this->button1->Text = L"Save ASA Manager Config";
-			this->button1->UseVisualStyleBackColor = true;
+			this->Save_ASA_Manager_Config_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->Save_ASA_Manager_Config_button->Location = System::Drawing::Point(12, 417);
+			this->Save_ASA_Manager_Config_button->Name = L"Save_ASA_Manager_Config_button";
+			this->Save_ASA_Manager_Config_button->Size = System::Drawing::Size(140, 23);
+			this->Save_ASA_Manager_Config_button->TabIndex = 10;
+			this->Save_ASA_Manager_Config_button->Text = L"Save ASA Manager Config";
+			this->Save_ASA_Manager_Config_button->UseVisualStyleBackColor = true;
 			// 
 			// Install_Update_ASA_Server_button
 			// 
@@ -332,7 +309,7 @@ namespace ASAServerManager {
 			// 
 			this->Server_Install_Folder_textBox->Location = System::Drawing::Point(12, 35);
 			this->Server_Install_Folder_textBox->Name = L"Server_Install_Folder_textBox";
-			this->Server_Install_Folder_textBox->Size = System::Drawing::Size(477, 20);
+			this->Server_Install_Folder_textBox->Size = System::Drawing::Size(396, 20);
 			this->Server_Install_Folder_textBox->TabIndex = 18;
 			// 
 			// Server_Name_label
@@ -385,6 +362,8 @@ namespace ASAServerManager {
 			// Map_comboBox
 			// 
 			this->Map_comboBox->FormattingEnabled = true;
+			this->Map_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"TheIsland_WP" });
+			this->Map_comboBox->SelectedIndex = 0;
 			this->Map_comboBox->Location = System::Drawing::Point(12, 162);
 			this->Map_comboBox->Name = L"Map_comboBox";
 			this->Map_comboBox->Size = System::Drawing::Size(140, 21);
@@ -433,6 +412,8 @@ namespace ASAServerManager {
 			// Anti_Cheat_comboBox
 			// 
 			this->Anti_Cheat_comboBox->FormattingEnabled = true;
+			this->Anti_Cheat_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Battle Eye On", L"Battle Eye Off" });
+			this->Anti_Cheat_comboBox->SelectedIndex = 0;
 			this->Anti_Cheat_comboBox->Location = System::Drawing::Point(240, 161);
 			this->Anti_Cheat_comboBox->Name = L"Anti_Cheat_comboBox";
 			this->Anti_Cheat_comboBox->Size = System::Drawing::Size(121, 21);
@@ -452,6 +433,8 @@ namespace ASAServerManager {
 			// Crossplay_comboBox
 			// 
 			this->Crossplay_comboBox->FormattingEnabled = true;
+			this->Crossplay_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Crossplay On", L"Crossplay Off" });
+			this->Crossplay_comboBox->SelectedIndex = 1;
 			this->Crossplay_comboBox->Location = System::Drawing::Point(368, 160);
 			this->Crossplay_comboBox->Name = L"Crossplay_comboBox";
 			this->Crossplay_comboBox->Size = System::Drawing::Size(121, 21);
@@ -486,13 +469,15 @@ namespace ASAServerManager {
 			this->RCON_Enable_label->TabIndex = 34;
 			this->RCON_Enable_label->Text = L"RCON Enable";
 			// 
-			// comboBox1
+			// RCON_Enable_comboBox
 			// 
-			this->comboBox1->FormattingEnabled = true;
-			this->comboBox1->Location = System::Drawing::Point(271, 206);
-			this->comboBox1->Name = L"comboBox1";
-			this->comboBox1->Size = System::Drawing::Size(90, 21);
-			this->comboBox1->TabIndex = 35;
+			this->RCON_Enable_comboBox->FormattingEnabled = true;
+			this->RCON_Enable_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"On", L"Off" });
+			this->RCON_Enable_comboBox->SelectedIndex = 1;
+			this->RCON_Enable_comboBox->Location = System::Drawing::Point(271, 206);
+			this->RCON_Enable_comboBox->Name = L"RCON_Enable_comboBox";
+			this->RCON_Enable_comboBox->Size = System::Drawing::Size(90, 21);
+			this->RCON_Enable_comboBox->TabIndex = 35;
 			// 
 			// RCON_Port_label
 			// 
@@ -511,6 +496,7 @@ namespace ASAServerManager {
 			this->RCON_Port_textBox->Name = L"RCON_Port_textBox";
 			this->RCON_Port_textBox->Size = System::Drawing::Size(121, 20);
 			this->RCON_Port_textBox->TabIndex = 37;
+			this->RCON_Port_textBox->Text = L"27020";
 			// 
 			// Adding_Mods_Info_label
 			// 
@@ -567,6 +553,16 @@ namespace ASAServerManager {
 			this->Winter_Wonderland_button->Text = L"Winter Wonderland";
 			this->Winter_Wonderland_button->UseVisualStyleBackColor = true;
 			// 
+			// Browse_button
+			// 
+			this->Browse_button->Location = System::Drawing::Point(414, 35);
+			this->Browse_button->Name = L"Browse_button";
+			this->Browse_button->Size = System::Drawing::Size(75, 23);
+			this->Browse_button->TabIndex = 43;
+			this->Browse_button->Text = L"Browse";
+			this->Browse_button->UseVisualStyleBackColor = true;
+			this->Browse_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Browse_button_Click);
+			// 
 			// ASA_Server_Manager_UI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -574,6 +570,7 @@ namespace ASAServerManager {
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
 				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->ClientSize = System::Drawing::Size(1084, 452);
+			this->Controls->Add(this->Browse_button);
 			this->Controls->Add(this->Winter_Wonderland_button);
 			this->Controls->Add(this->Add_ASA_Events_label);
 			this->Controls->Add(this->Turkey_Triales_button);
@@ -581,7 +578,7 @@ namespace ASAServerManager {
 			this->Controls->Add(this->Adding_Mods_Info_label);
 			this->Controls->Add(this->RCON_Port_textBox);
 			this->Controls->Add(this->RCON_Port_label);
-			this->Controls->Add(this->comboBox1);
+			this->Controls->Add(this->RCON_Enable_comboBox);
 			this->Controls->Add(this->RCON_Enable_label);
 			this->Controls->Add(this->Admin_Password_textBox);
 			this->Controls->Add(this->Admin_Password_label);
@@ -606,7 +603,7 @@ namespace ASAServerManager {
 			this->Controls->Add(this->Edit_GameUserSettings_ini_file_button);
 			this->Controls->Add(this->Create_ASA_Server_Backup_Files_button);
 			this->Controls->Add(this->Install_Update_ASA_Server_button);
-			this->Controls->Add(this->button1);
+			this->Controls->Add(this->Save_ASA_Manager_Config_button);
 			this->Controls->Add(this->Server_Crashed_Check_label);
 			this->Controls->Add(this->Server_Crashed_Check_progressBar);
 			this->Controls->Add(this->Manager_Status_label);
@@ -628,5 +625,19 @@ namespace ASAServerManager {
 #pragma endregion
 	private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
-	};
+	private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		FolderBrowserDialog^ SelectFolderDialog = gcnew FolderBrowserDialog();
+
+		//Setup dialog box
+		SelectFolderDialog->Description = "Select directory to store your ASA server files to";
+		SelectFolderDialog->ShowNewFolderButton = true;
+		SelectFolderDialog->RootFolder = System::Environment::SpecialFolder::Desktop;
+
+		//Display dialog box
+		if (SelectFolderDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+		{
+			Server_Install_Folder_textBox->Text = SelectFolderDialog->SelectedPath;
+		}
+	}
+};
 }
