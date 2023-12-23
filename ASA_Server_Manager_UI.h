@@ -52,7 +52,18 @@ namespace ASAServerManager {
 	private: System::Windows::Forms::Button^ button4;
 	private: System::Windows::Forms::Button^ button5;
 	private: System::Windows::Forms::Button^ button6;
-	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::TextBox^ Mods_textBox;
+
+	private: System::Windows::Forms::Label^ Server_Install_Folder_label;
+	private: System::Windows::Forms::TextBox^ Server_Install_Folder_textBox;
+
+	private: System::Windows::Forms::Label^ Server_Name_label;
+	private: System::Windows::Forms::TextBox^ Server_Name_textBox;
+
+	private: System::Windows::Forms::Label^ Mods_label;
+	private: System::Windows::Forms::Label^ Server_Password_label;
+	private: System::Windows::Forms::TextBox^ Server_Password_textBox;
+
 
 
 
@@ -84,7 +95,14 @@ namespace ASAServerManager {
 			this->button4 = (gcnew System::Windows::Forms::Button());
 			this->button5 = (gcnew System::Windows::Forms::Button());
 			this->button6 = (gcnew System::Windows::Forms::Button());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->Mods_textBox = (gcnew System::Windows::Forms::TextBox());
+			this->Server_Install_Folder_label = (gcnew System::Windows::Forms::Label());
+			this->Server_Install_Folder_textBox = (gcnew System::Windows::Forms::TextBox());
+			this->Server_Name_label = (gcnew System::Windows::Forms::Label());
+			this->Server_Name_textBox = (gcnew System::Windows::Forms::TextBox());
+			this->Mods_label = (gcnew System::Windows::Forms::Label());
+			this->Server_Password_label = (gcnew System::Windows::Forms::Label());
+			this->Server_Password_textBox = (gcnew System::Windows::Forms::TextBox());
 			this->SuspendLayout();
 			// 
 			// Stop_Server_button
@@ -147,7 +165,7 @@ namespace ASAServerManager {
 			// 
 			this->Manager_Status_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Manager_Status_label->Location = System::Drawing::Point(619, 16);
+			this->Manager_Status_label->Location = System::Drawing::Point(582, 13);
 			this->Manager_Status_label->Name = L"Manager_Status_label";
 			this->Manager_Status_label->Size = System::Drawing::Size(121, 28);
 			this->Manager_Status_label->TabIndex = 7;
@@ -226,12 +244,77 @@ namespace ASAServerManager {
 			this->button6->Text = L"button6";
 			this->button6->UseVisualStyleBackColor = true;
 			// 
-			// textBox1
+			// Mods_textBox
 			// 
-			this->textBox1->Location = System::Drawing::Point(12, 371);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(451, 20);
-			this->textBox1->TabIndex = 16;
+			this->Mods_textBox->Location = System::Drawing::Point(12, 371);
+			this->Mods_textBox->Name = L"Mods_textBox";
+			this->Mods_textBox->Size = System::Drawing::Size(450, 20);
+			this->Mods_textBox->TabIndex = 16;
+			// 
+			// Server_Install_Folder_label
+			// 
+			this->Server_Install_Folder_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->Server_Install_Folder_label->Location = System::Drawing::Point(12, 9);
+			this->Server_Install_Folder_label->Name = L"Server_Install_Folder_label";
+			this->Server_Install_Folder_label->Size = System::Drawing::Size(184, 23);
+			this->Server_Install_Folder_label->TabIndex = 17;
+			this->Server_Install_Folder_label->Text = L"Server Installation Folder";
+			this->Server_Install_Folder_label->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
+			// 
+			// Server_Install_Folder_textBox
+			// 
+			this->Server_Install_Folder_textBox->Location = System::Drawing::Point(12, 35);
+			this->Server_Install_Folder_textBox->Name = L"Server_Install_Folder_textBox";
+			this->Server_Install_Folder_textBox->Size = System::Drawing::Size(450, 20);
+			this->Server_Install_Folder_textBox->TabIndex = 18;
+			// 
+			// Server_Name_label
+			// 
+			this->Server_Name_label->AutoSize = true;
+			this->Server_Name_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Server_Name_label->Location = System::Drawing::Point(15, 62);
+			this->Server_Name_label->Name = L"Server_Name_label";
+			this->Server_Name_label->Size = System::Drawing::Size(80, 13);
+			this->Server_Name_label->TabIndex = 19;
+			this->Server_Name_label->Text = L"Server Name";
+			// 
+			// Server_Name_textBox
+			// 
+			this->Server_Name_textBox->Location = System::Drawing::Point(12, 79);
+			this->Server_Name_textBox->Name = L"Server_Name_textBox";
+			this->Server_Name_textBox->Size = System::Drawing::Size(450, 20);
+			this->Server_Name_textBox->TabIndex = 20;
+			// 
+			// Mods_label
+			// 
+			this->Mods_label->AutoSize = true;
+			this->Mods_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->Mods_label->Location = System::Drawing::Point(18, 351);
+			this->Mods_label->Name = L"Mods_label";
+			this->Mods_label->Size = System::Drawing::Size(37, 13);
+			this->Mods_label->TabIndex = 21;
+			this->Mods_label->Text = L"Mods";
+			// 
+			// Server_Password_label
+			// 
+			this->Server_Password_label->AutoSize = true;
+			this->Server_Password_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->Server_Password_label->Location = System::Drawing::Point(18, 106);
+			this->Server_Password_label->Name = L"Server_Password_label";
+			this->Server_Password_label->Size = System::Drawing::Size(102, 13);
+			this->Server_Password_label->TabIndex = 22;
+			this->Server_Password_label->Text = L"Server Password";
+			// 
+			// Server_Password_textBox
+			// 
+			this->Server_Password_textBox->Location = System::Drawing::Point(12, 123);
+			this->Server_Password_textBox->Name = L"Server_Password_textBox";
+			this->Server_Password_textBox->Size = System::Drawing::Size(450, 20);
+			this->Server_Password_textBox->TabIndex = 23;
 			// 
 			// ASA_Server_Manager_UI
 			// 
@@ -240,7 +323,14 @@ namespace ASAServerManager {
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
 				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->ClientSize = System::Drawing::Size(1084, 452);
-			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->Server_Password_textBox);
+			this->Controls->Add(this->Server_Password_label);
+			this->Controls->Add(this->Mods_label);
+			this->Controls->Add(this->Server_Name_textBox);
+			this->Controls->Add(this->Server_Name_label);
+			this->Controls->Add(this->Server_Install_Folder_textBox);
+			this->Controls->Add(this->Server_Install_Folder_label);
+			this->Controls->Add(this->Mods_textBox);
 			this->Controls->Add(this->button6);
 			this->Controls->Add(this->button5);
 			this->Controls->Add(this->button4);
