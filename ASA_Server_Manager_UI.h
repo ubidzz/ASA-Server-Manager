@@ -178,9 +178,9 @@ namespace ASAServerManager {
 			this->Start_Server_button->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->Start_Server_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->Start_Server_button->Location = System::Drawing::Point(854, 13);
+			this->Start_Server_button->Location = System::Drawing::Point(851, 13);
 			this->Start_Server_button->Name = L"Start_Server_button";
-			this->Start_Server_button->Size = System::Drawing::Size(105, 31);
+			this->Start_Server_button->Size = System::Drawing::Size(108, 31);
 			this->Start_Server_button->TabIndex = 1;
 			this->Start_Server_button->Text = L"Start Server";
 			this->Start_Server_button->UseVisualStyleBackColor = false;
