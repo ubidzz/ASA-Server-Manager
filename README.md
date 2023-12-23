@@ -5,7 +5,7 @@ The EXE file is unplublished so you will get a warning downloading it and when y
 
 ![ASA Server Manager](https://i.ibb.co/KV6M9Rb/2023-12-23.png)
 
-[ASA Server Manager](https://1drv.ms/u/s!Av5X05qIbM66h4IA_OIfY4Kklvt74Q?e=9mZHry)
+[Download ASA Server Manager](https://1drv.ms/u/s!Av5X05qIbM66h4IA_OIfY4Kklvt74Q?e=9mZHry)
 
 The only things that I didn't get done was to finish 2 buttons that edit the ASA server config files but everything else works and will run a server.
 The manager also has a builtin auto restart server if the server ever crashes.
