@@ -39,12 +39,14 @@ namespace ASAServerManager {
 	private: System::Void Crash_Log_Message()
 	{
 		DateTime^ Timestamp = System::DateTime::Now;
-		Displayed_Server_Crash_Logs->Items->Add("/r/n----------------------------------------------------------------/r/n");
-		Displayed_Server_Crash_Logs->Items->Add(Timestamp + "/r/nServer has crashed and tempting to restart the " + Server_Name_textBox->Text + " server" + Displayed_Server_Crash_Logs->Text);
+		String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
+		Displayed_Server_Crash_Logs->Text = Timestamp + " \r\nThe server has crashed and is tempting to restart the " + Server_Name_textBox->Text + " server!" + LineBrake + Displayed_Server_Crash_Logs->Text;
 	}
-	private: System::Void Manager_Status_Message()
+	private: System::Void Manager_Status_Message(String^ Message)
 	{
-
+		DateTime^ Timestamp = System::DateTime::Now;
+		String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
+		Manager_Status_Messages->Text = Timestamp + "\r\n" + Message + LineBrake + Manager_Status_Messages->Text;
 	}
 	private: System::Void Load_Config()
 	{
@@ -55,8 +57,6 @@ namespace ASAServerManager {
 	protected:
 	private: System::Windows::Forms::Button^ Start_Server_button;
 	private: System::Windows::Forms::Label^ ASA_Server_Crashed_Log_label;
-	private: System::Windows::Forms::ListBox^ Displayed_Server_Crash_Logs;
-	private: System::Windows::Forms::ListBox^ Displayed_Manager_Status;
 	private: System::Windows::Forms::Label^ Manager_Status_label;
 	private: System::Windows::Forms::ProgressBar^ Server_Crashed_Check_progressBar;
 	private: System::Windows::Forms::Label^ Server_Crashed_Check_label;
@@ -94,6 +94,8 @@ namespace ASAServerManager {
 	private: System::Windows::Forms::Label^ Add_ASA_Events_label;
 	private: System::Windows::Forms::Button^ Winter_Wonderland_button;
 	private: System::Windows::Forms::Button^ Browse_button;
+	private: System::Windows::Forms::TextBox^ Displayed_Server_Crash_Logs;
+	private: System::Windows::Forms::TextBox^ Manager_Status_Messages;
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -111,8 +113,6 @@ namespace ASAServerManager {
 			this->Stop_Server_button = (gcnew System::Windows::Forms::Button());
 			this->Start_Server_button = (gcnew System::Windows::Forms::Button());
 			this->ASA_Server_Crashed_Log_label = (gcnew System::Windows::Forms::Label());
-			this->Displayed_Server_Crash_Logs = (gcnew System::Windows::Forms::ListBox());
-			this->Displayed_Manager_Status = (gcnew System::Windows::Forms::ListBox());
 			this->Manager_Status_label = (gcnew System::Windows::Forms::Label());
 			this->Server_Crashed_Check_progressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->Server_Crashed_Check_label = (gcnew System::Windows::Forms::Label());
@@ -150,6 +150,8 @@ namespace ASAServerManager {
 			this->Add_ASA_Events_label = (gcnew System::Windows::Forms::Label());
 			this->Winter_Wonderland_button = (gcnew System::Windows::Forms::Button());
 			this->Browse_button = (gcnew System::Windows::Forms::Button());
+			this->Displayed_Server_Crash_Logs = (gcnew System::Windows::Forms::TextBox());
+			this->Manager_Status_Messages = (gcnew System::Windows::Forms::TextBox());
 			this->SuspendLayout();
 			// 
 			// Stop_Server_button
@@ -189,25 +191,6 @@ namespace ASAServerManager {
 			this->ASA_Server_Crashed_Log_label->Size = System::Drawing::Size(162, 15);
 			this->ASA_Server_Crashed_Log_label->TabIndex = 2;
 			this->ASA_Server_Crashed_Log_label->Text = L"ASA Server Crashed Log";
-			// 
-			// Displayed_Server_Crash_Logs
-			// 
-			this->Displayed_Server_Crash_Logs->FormattingEnabled = true;
-			this->Displayed_Server_Crash_Logs->Location = System::Drawing::Point(815, 73);
-			this->Displayed_Server_Crash_Logs->Name = L"Displayed_Server_Crash_Logs";
-			this->Displayed_Server_Crash_Logs->ScrollAlwaysVisible = true;
-			this->Displayed_Server_Crash_Logs->Size = System::Drawing::Size(257, 264);
-			this->Displayed_Server_Crash_Logs->TabIndex = 5;
-			this->Displayed_Server_Crash_Logs->UseTabStops = false;
-			// 
-			// Displayed_Manager_Status
-			// 
-			this->Displayed_Manager_Status->FormattingEnabled = true;
-			this->Displayed_Manager_Status->Location = System::Drawing::Point(499, 44);
-			this->Displayed_Manager_Status->Name = L"Displayed_Manager_Status";
-			this->Displayed_Manager_Status->ScrollAlwaysVisible = true;
-			this->Displayed_Manager_Status->Size = System::Drawing::Size(303, 355);
-			this->Displayed_Manager_Status->TabIndex = 6;
 			// 
 			// Manager_Status_label
 			// 
@@ -388,6 +371,7 @@ namespace ASAServerManager {
 			this->Map_comboBox->Name = L"Map_comboBox";
 			this->Map_comboBox->Size = System::Drawing::Size(140, 21);
 			this->Map_comboBox->TabIndex = 24;
+			this->Map_comboBox->SelectedIndex = 0;
 			// 
 			// Map_label
 			// 
@@ -417,6 +401,7 @@ namespace ASAServerManager {
 			this->Max_Players_textBox->Name = L"Max_Players_textBox";
 			this->Max_Players_textBox->Size = System::Drawing::Size(75, 20);
 			this->Max_Players_textBox->TabIndex = 27;
+			this->Max_Players_textBox->Text = "70";
 			// 
 			// Anti_Cheat_label
 			// 
@@ -437,6 +422,7 @@ namespace ASAServerManager {
 			this->Anti_Cheat_comboBox->Name = L"Anti_Cheat_comboBox";
 			this->Anti_Cheat_comboBox->Size = System::Drawing::Size(121, 21);
 			this->Anti_Cheat_comboBox->TabIndex = 29;
+			this->Anti_Cheat_comboBox->SelectedIndex = 0;
 			// 
 			// Crossplay_label
 			// 
@@ -452,11 +438,12 @@ namespace ASAServerManager {
 			// Crossplay_comboBox
 			// 
 			this->Crossplay_comboBox->FormattingEnabled = true;
-			this->Crossplay_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Crossplay On", L"Crossplay Off" });
+			this->Crossplay_comboBox->Items->AddRange(gcnew cli::array< System::Object^ >(2) { L"Crossplay On", L"Crossplay Off" });
 			this->Crossplay_comboBox->Location = System::Drawing::Point(368, 160);
 			this->Crossplay_comboBox->Name = L"Crossplay_comboBox";
 			this->Crossplay_comboBox->Size = System::Drawing::Size(121, 21);
 			this->Crossplay_comboBox->TabIndex = 31;
+			this->Crossplay_comboBox->SelectedIndex = 1;
 			// 
 			// Admin_Password_label
 			// 
@@ -490,11 +477,12 @@ namespace ASAServerManager {
 			// RCON_Enable_comboBox
 			// 
 			this->RCON_Enable_comboBox->FormattingEnabled = true;
-			this->RCON_Enable_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"On", L"Off" });
+			this->RCON_Enable_comboBox->Items->AddRange(gcnew cli::array< System::Object^ >(2) { L"On", L"Off" });
 			this->RCON_Enable_comboBox->Location = System::Drawing::Point(271, 206);
 			this->RCON_Enable_comboBox->Name = L"RCON_Enable_comboBox";
 			this->RCON_Enable_comboBox->Size = System::Drawing::Size(90, 21);
 			this->RCON_Enable_comboBox->TabIndex = 35;
+			this->RCON_Enable_comboBox->SelectedIndex = 1;
 			// 
 			// RCON_Port_label
 			// 
@@ -581,6 +569,26 @@ namespace ASAServerManager {
 			this->Browse_button->UseVisualStyleBackColor = true;
 			this->Browse_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Browse_button_Click);
 			// 
+			// Displayed_Server_Crash_Logs
+			// 
+			this->Displayed_Server_Crash_Logs->Location = System::Drawing::Point(815, 78);
+			this->Displayed_Server_Crash_Logs->Multiline = true;
+			this->Displayed_Server_Crash_Logs->Name = L"Displayed_Server_Crash_Logs";
+			this->Displayed_Server_Crash_Logs->ReadOnly = true;
+			this->Displayed_Server_Crash_Logs->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->Displayed_Server_Crash_Logs->Size = System::Drawing::Size(257, 269);
+			this->Displayed_Server_Crash_Logs->TabIndex = 44;
+			// 
+			// Manager_Status_Messages
+			// 
+			this->Manager_Status_Messages->Location = System::Drawing::Point(504, 44);
+			this->Manager_Status_Messages->Multiline = true;
+			this->Manager_Status_Messages->Name = L"Manager_Status_Messages";
+			this->Manager_Status_Messages->ReadOnly = true;
+			this->Manager_Status_Messages->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->Manager_Status_Messages->Size = System::Drawing::Size(305, 355);
+			this->Manager_Status_Messages->TabIndex = 45;
+			// 
 			// ASA_Server_Manager_UI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -588,6 +596,8 @@ namespace ASAServerManager {
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
 				static_cast<System::Int32>(static_cast<System::Byte>(255)));
 			this->ClientSize = System::Drawing::Size(1084, 452);
+			this->Controls->Add(this->Manager_Status_Messages);
+			this->Controls->Add(this->Displayed_Server_Crash_Logs);
 			this->Controls->Add(this->Browse_button);
 			this->Controls->Add(this->Winter_Wonderland_button);
 			this->Controls->Add(this->Add_ASA_Events_label);
@@ -625,8 +635,6 @@ namespace ASAServerManager {
 			this->Controls->Add(this->Server_Crashed_Check_label);
 			this->Controls->Add(this->Server_Crashed_Check_progressBar);
 			this->Controls->Add(this->Manager_Status_label);
-			this->Controls->Add(this->Displayed_Manager_Status);
-			this->Controls->Add(this->Displayed_Server_Crash_Logs);
 			this->Controls->Add(this->ASA_Server_Crashed_Log_label);
 			this->Controls->Add(this->Start_Server_button);
 			this->Controls->Add(this->Stop_Server_button);
@@ -685,7 +693,7 @@ namespace ASAServerManager {
 		Load_Config();
 	}
 	private: System::Void Install_Update_ASA_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		Crash_Log_Message();
+		Manager_Status_Message("yrdfgsdhshmprthnmsprth");
 	}
 };
 }
