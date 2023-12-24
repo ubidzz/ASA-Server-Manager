@@ -1,13 +1,15 @@
 #pragma once
-
+#include "XML_Handler.h"
 namespace ASAServerManager {
 
 	using namespace System;
+	using namespace System::Diagnostics;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace XML;
 
 	/// <summary>
 	/// Summary for ASA_Server_Manager_UI
@@ -34,6 +36,21 @@ namespace ASAServerManager {
 				delete components;
 			}
 		}
+	private: System::Void Crash_Log_Message()
+	{
+		DateTime^ Timestamp = System::DateTime::Now;
+		Displayed_Server_Crash_Logs->Items->Add("/r/n----------------------------------------------------------------/r/n");
+		Displayed_Server_Crash_Logs->Items->Add(Timestamp + "/r/nServer has crashed and tempting to restart the " + Server_Name_textBox->Text + " server" + Displayed_Server_Crash_Logs->Text);
+	}
+	private: System::Void Manager_Status_Message()
+	{
+
+	}
+	private: System::Void Load_Config()
+	{
+		XML::XML_Hander();
+	}
+
 	private: System::Windows::Forms::Button^ Stop_Server_button;
 	protected:
 	private: System::Windows::Forms::Button^ Start_Server_button;
@@ -227,27 +244,29 @@ namespace ASAServerManager {
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 			this->Save_ASA_Manager_Config_button->Location = System::Drawing::Point(12, 417);
 			this->Save_ASA_Manager_Config_button->Name = L"Save_ASA_Manager_Config_button";
-			this->Save_ASA_Manager_Config_button->Size = System::Drawing::Size(140, 23);
+			this->Save_ASA_Manager_Config_button->Size = System::Drawing::Size(171, 23);
 			this->Save_ASA_Manager_Config_button->TabIndex = 10;
 			this->Save_ASA_Manager_Config_button->Text = L"Save ASA Manager Config";
 			this->Save_ASA_Manager_Config_button->UseVisualStyleBackColor = true;
+			this->Save_ASA_Manager_Config_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Save_ASA_Manager_Config_button_Click);
 			// 
 			// Install_Update_ASA_Server_button
 			// 
 			this->Install_Update_ASA_Server_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->Install_Update_ASA_Server_button->Location = System::Drawing::Point(158, 417);
+			this->Install_Update_ASA_Server_button->Location = System::Drawing::Point(189, 417);
 			this->Install_Update_ASA_Server_button->Name = L"Install_Update_ASA_Server_button";
 			this->Install_Update_ASA_Server_button->Size = System::Drawing::Size(181, 23);
 			this->Install_Update_ASA_Server_button->TabIndex = 11;
 			this->Install_Update_ASA_Server_button->Text = L"Install/Update ASA Server";
 			this->Install_Update_ASA_Server_button->UseVisualStyleBackColor = true;
+			this->Install_Update_ASA_Server_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Install_Update_ASA_Server_button_Click);
 			// 
 			// Create_ASA_Server_Backup_Files_button
 			// 
 			this->Create_ASA_Server_Backup_Files_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->Create_ASA_Server_Backup_Files_button->Location = System::Drawing::Point(345, 417);
+			this->Create_ASA_Server_Backup_Files_button->Location = System::Drawing::Point(376, 417);
 			this->Create_ASA_Server_Backup_Files_button->Name = L"Create_ASA_Server_Backup_Files_button";
 			this->Create_ASA_Server_Backup_Files_button->Size = System::Drawing::Size(200, 23);
 			this->Create_ASA_Server_Backup_Files_button->TabIndex = 12;
@@ -258,18 +277,19 @@ namespace ASAServerManager {
 			// 
 			this->Edit_GameUserSettings_ini_file_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->Edit_GameUserSettings_ini_file_button->Location = System::Drawing::Point(551, 417);
+			this->Edit_GameUserSettings_ini_file_button->Location = System::Drawing::Point(582, 417);
 			this->Edit_GameUserSettings_ini_file_button->Name = L"Edit_GameUserSettings_ini_file_button";
 			this->Edit_GameUserSettings_ini_file_button->Size = System::Drawing::Size(184, 23);
 			this->Edit_GameUserSettings_ini_file_button->TabIndex = 13;
 			this->Edit_GameUserSettings_ini_file_button->Text = L"Edit GameUserSettings.ini file";
 			this->Edit_GameUserSettings_ini_file_button->UseVisualStyleBackColor = true;
+			this->Edit_GameUserSettings_ini_file_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Edit_GameUserSettings_ini_file_button_Click);
 			// 
 			// Edit_Game_ini_file_button
 			// 
 			this->Edit_Game_ini_file_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->Edit_Game_ini_file_button->Location = System::Drawing::Point(741, 417);
+			this->Edit_Game_ini_file_button->Location = System::Drawing::Point(772, 417);
 			this->Edit_Game_ini_file_button->Name = L"Edit_Game_ini_file_button";
 			this->Edit_Game_ini_file_button->Size = System::Drawing::Size(126, 23);
 			this->Edit_Game_ini_file_button->TabIndex = 14;
@@ -286,6 +306,7 @@ namespace ASAServerManager {
 			this->Donate_button->TabIndex = 15;
 			this->Donate_button->Text = L"Donate!";
 			this->Donate_button->UseVisualStyleBackColor = true;
+			this->Donate_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Donate_button_Click);
 			// 
 			// Mods_textBox
 			// 
@@ -363,7 +384,6 @@ namespace ASAServerManager {
 			// 
 			this->Map_comboBox->FormattingEnabled = true;
 			this->Map_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"TheIsland_WP" });
-			this->Map_comboBox->SelectedIndex = 0;
 			this->Map_comboBox->Location = System::Drawing::Point(12, 162);
 			this->Map_comboBox->Name = L"Map_comboBox";
 			this->Map_comboBox->Size = System::Drawing::Size(140, 21);
@@ -413,7 +433,6 @@ namespace ASAServerManager {
 			// 
 			this->Anti_Cheat_comboBox->FormattingEnabled = true;
 			this->Anti_Cheat_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Battle Eye On", L"Battle Eye Off" });
-			this->Anti_Cheat_comboBox->SelectedIndex = 0;
 			this->Anti_Cheat_comboBox->Location = System::Drawing::Point(240, 161);
 			this->Anti_Cheat_comboBox->Name = L"Anti_Cheat_comboBox";
 			this->Anti_Cheat_comboBox->Size = System::Drawing::Size(121, 21);
@@ -434,7 +453,6 @@ namespace ASAServerManager {
 			// 
 			this->Crossplay_comboBox->FormattingEnabled = true;
 			this->Crossplay_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"Crossplay On", L"Crossplay Off" });
-			this->Crossplay_comboBox->SelectedIndex = 1;
 			this->Crossplay_comboBox->Location = System::Drawing::Point(368, 160);
 			this->Crossplay_comboBox->Name = L"Crossplay_comboBox";
 			this->Crossplay_comboBox->Size = System::Drawing::Size(121, 21);
@@ -473,7 +491,6 @@ namespace ASAServerManager {
 			// 
 			this->RCON_Enable_comboBox->FormattingEnabled = true;
 			this->RCON_Enable_comboBox->Items->AddRange(gcnew cli::array< System::Object^  >(2) { L"On", L"Off" });
-			this->RCON_Enable_comboBox->SelectedIndex = 1;
 			this->RCON_Enable_comboBox->Location = System::Drawing::Point(271, 206);
 			this->RCON_Enable_comboBox->Name = L"RCON_Enable_comboBox";
 			this->RCON_Enable_comboBox->Size = System::Drawing::Size(90, 21);
@@ -519,6 +536,7 @@ namespace ASAServerManager {
 			this->Open_Curseforge_Website_button->TabIndex = 39;
 			this->Open_Curseforge_Website_button->Text = L"Open Curseforge Website";
 			this->Open_Curseforge_Website_button->UseVisualStyleBackColor = false;
+			this->Open_Curseforge_Website_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Open_Curseforge_Website_button_Click);
 			// 
 			// Turkey_Triales_button
 			// 
@@ -638,6 +656,36 @@ namespace ASAServerManager {
 		{
 			Server_Install_Folder_textBox->Text = SelectFolderDialog->SelectedPath;
 		}
+	}
+	private: System::Void Edit_GameUserSettings_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
+	}
+	private: System::Void Donate_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
+		ProcessStartInfo^ DonationProcess = gcnew ProcessStartInfo();
+		DonationProcess->FileName = "Powershell.exe";
+		DonationProcess->UseShellExecute = false;
+		DonationProcess->CreateNoWindow = true;
+		DonationProcess->Arguments = "Start-Process https://www.paypal.com/donate/?hosted_button_id=A8PXV3UDAHW54";
+		DonationProcess->WindowStyle = ProcessWindowStyle::Hidden;
+		process->StartInfo = DonationProcess;
+		process->Start();
+	}
+	private: System::Void Open_Curseforge_Website_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
+		ProcessStartInfo^ DonationProcess = gcnew ProcessStartInfo();
+		DonationProcess->FileName = "Powershell.exe";
+		DonationProcess->UseShellExecute = false;
+		DonationProcess->CreateNoWindow = true;
+		DonationProcess->Arguments = "Start-Process https://www.curseforge.com/ark-survival-ascended";
+		DonationProcess->WindowStyle = ProcessWindowStyle::Hidden;
+		process->StartInfo = DonationProcess;
+		process->Start();
+	}
+	private: System::Void Save_ASA_Manager_Config_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		Load_Config();
+	}
+	private: System::Void Install_Update_ASA_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		Crash_Log_Message();
 	}
 };
 }

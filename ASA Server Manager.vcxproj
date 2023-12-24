@@ -132,6 +132,7 @@
     </ClInclude>
     <ClInclude Include="Functions.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="XML_Handler.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ASA_Server_Manager_UI.resx">
