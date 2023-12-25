@@ -45,7 +45,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\logo.ico">
+    <Image Include="logo.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
