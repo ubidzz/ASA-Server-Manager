@@ -15,16 +15,18 @@ Due to wildcard releasing a update that made it so you can't change the ports it
 > If your ASA Server Installation Folder path has a space in it you will have to edit the ASA_Start_Server.bat file.
 > Location: ASA_Manager_Config/ASA_Start_Server.bat
 
-# Looking for this code.
+### Looking for this code.
 ```
 START /B /high %ASA_PATH%%ASA_EXE% %ASA_MAP%?SessionName=%ASA_SERVER_NAME%?listen?ServerPassword=%ASA_JOIN_PASSWORD%?MaxPlayers=%ASA_MAX_PLAYERS%?ServerAdminPassword=%ASA_ADMIN_PASSWORD% %ASA_BattlEye% %ASA_CROSSPLAY% %ASA_MODS%
 ```
-Replace it with this code.
+### Replace it with this code.
 ```
 START /B /high "" "%ASA_PATH%%ASA_EXE%" %ASA_MAP%?SessionName=%ASA_SERVER_NAME%?listen?ServerPassword=%ASA_JOIN_PASSWORD%?MaxPlayers=%ASA_MAX_PLAYERS%?ServerAdminPassword=%ASA_ADMIN_PASSWORD% %ASA_BattlEye% %ASA_CROSSPLAY% %ASA_MODS%
 ```
-Save and click the Start Server button.
-You will have to replace the line every time the ASA Server Manger saves it's config file and I could not fix this before I lost my files.
+### Save and click the Start Server button.
+
+> [!IMPORTANT]
+>You will have to replace the line every time the ASA Server Manger saves it's config file and I could not fix this before I lost my files.
 
 ## The EXE file was built in c++/cli .Net framework v4.7.2
 
