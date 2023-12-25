@@ -9,6 +9,8 @@ namespace ASAServerManager {
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
 	using namespace XML;
+	using namespace Batch;
+	using namespace Functions;
 
 	/// <summary>
 	/// Summary for ASA_Server_Manager_UI
@@ -62,15 +64,18 @@ namespace ASAServerManager {
 		}
 		private: System::Void Load_Config()
 		{
-			String^ result = XML::XML_Handler::Load_XML_Config("string");
+			String^ result = XML::XML_Handler::Load_XML_Config();
+			//Manager_Status_Message(result);
 		}
 		private: System::Void Update_Config()
 		{
-			String^ result = XML::XML_Handler::Update_XML_Config();
+			String^ result = XML::XML_Handler::Update_XML_Config("Update", Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
+			Manager_Status_Message(result);
 		}
 		private: System::Void Create_Config()
 		{
-			String^ result = XML::XML_Handler::Create_XML_Config();
+			String^ result = XML::XML_Handler::Create_XML_Config("Create", Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
+			Manager_Status_Message(result);
 		}
 
 		private: System::Windows::Forms::Button^ Stop_Server_button;
@@ -672,6 +677,7 @@ namespace ASAServerManager {
 			}
 		#pragma endregion
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
+			Functions::Function_Handler::Create_Directory("ASA_Manager_Config\\");
 			Load_Config();
 		}
 		private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {

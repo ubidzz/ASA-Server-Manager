@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClCompile Include="ASA_Server_Manager_UI.cpp" />
     <ClCompile Include="Batch_Handler.cpp" />
+    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="XML_Handler.cpp" />
   </ItemGroup>
   <ItemGroup>
