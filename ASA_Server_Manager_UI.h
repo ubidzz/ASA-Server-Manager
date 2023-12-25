@@ -4,10 +4,6 @@
 namespace ASAServerManager {
 
 	using namespace System;
-	using namespace System::Diagnostics;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
 	using namespace XML;
 	using namespace Batch;
 	using namespace Functions;
@@ -677,46 +673,18 @@ namespace ASAServerManager {
 			}
 		#pragma endregion
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
-			Functions::Function_Handler::Create_Directory("ASA_Manager_Config\\");
 			Load_Config();
 		}
 		private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			FolderBrowserDialog^ SelectFolderDialog = gcnew FolderBrowserDialog();
-
-			//Setup dialog box
-			SelectFolderDialog->Description = "Select directory to store your ASA server files to";
-			SelectFolderDialog->ShowNewFolderButton = true;
-			SelectFolderDialog->RootFolder = System::Environment::SpecialFolder::Desktop;
-
-			//Display dialog box
-			if (SelectFolderDialog->ShowDialog() == System::Windows::Forms::DialogResult::OK)
-			{
-				Server_Install_Folder_textBox->Text = SelectFolderDialog->SelectedPath;
-			}
+			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window()->Trim();
 		}
 		private: System::Void Edit_GameUserSettings_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
 		}
 		private: System::Void Donate_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
-			ProcessStartInfo^ DonationProcess = gcnew ProcessStartInfo();
-			DonationProcess->FileName = "Powershell.exe";
-			DonationProcess->UseShellExecute = false;
-			DonationProcess->CreateNoWindow = true;
-			DonationProcess->Arguments = "Start-Process https://www.paypal.com/donate/?hosted_button_id=A8PXV3UDAHW54";
-			DonationProcess->WindowStyle = ProcessWindowStyle::Hidden;
-			process->StartInfo = DonationProcess;
-			process->Start();
+			Functions::Function_Handler::Open_Donation_Website();
 		}
 		private: System::Void Open_Curseforge_Website_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
-			ProcessStartInfo^ DonationProcess = gcnew ProcessStartInfo();
-			DonationProcess->FileName = "Powershell.exe";
-			DonationProcess->UseShellExecute = false;
-			DonationProcess->CreateNoWindow = true;
-			DonationProcess->Arguments = "Start-Process https://www.curseforge.com/ark-survival-ascended";
-			DonationProcess->WindowStyle = ProcessWindowStyle::Hidden;
-			process->StartInfo = DonationProcess;
-			process->Start();
+			Functions::Function_Handler::Open_curseforge_Website();
 		}
 		private: System::Void Save_ASA_Manager_Config_button_Click(System::Object^ sender, System::EventArgs^ e) {
 		}

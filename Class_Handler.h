@@ -18,7 +18,10 @@ namespace Batch {
 namespace Functions {
 	public ref class Function_Handler : public System::Windows::Forms::Form
 	{
-		public: static System::Boolean^ Create_Directory(System::String^ Folder_Path);
+		public: static System::Void Create_Directory(System::String^ Folder_Path);
 		public: static System::Boolean^ Check_If_Folder_Exists(System::String^ Folder_Path);
+		public: static System::Void Open_curseforge_Website();
+		public: static System::Void Open_Donation_Website();
+		public: static System::String^ Open_Browse_Window();
 	};
 }
