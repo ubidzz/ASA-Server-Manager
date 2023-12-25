@@ -18,6 +18,12 @@
     <ClCompile Include="ASA_Server_Manager_UI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XML_Handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Batch_Handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASA_Server_Manager_UI.h">
@@ -26,10 +32,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XML_Handler.h">
+    <ClInclude Include="Class_Handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

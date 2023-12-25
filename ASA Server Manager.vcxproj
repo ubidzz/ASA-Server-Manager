@@ -125,14 +125,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ASA_Server_Manager_UI.cpp" />
+    <ClCompile Include="Batch_Handler.cpp" />
+    <ClCompile Include="XML_Handler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASA_Server_Manager_UI.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="Functions.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="XML_Handler.h" />
+    <ClInclude Include="Class_Handler.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ASA_Server_Manager_UI.resx">
