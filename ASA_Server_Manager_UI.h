@@ -65,12 +65,12 @@ namespace ASAServerManager {
 		}
 		private: System::Void Update_Config()
 		{
-			String^ result = XML::XML_Handler::Update_XML_Config("Update", Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
+			String^ result = XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
 			Manager_Status_Message(result);
 		}
 		private: System::Void Create_Config()
 		{
-			String^ result = XML::XML_Handler::Create_XML_Config("Create", Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
+			String^ result = XML::XML_Handler::Create_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
 			Manager_Status_Message(result);
 		}
 
@@ -687,6 +687,7 @@ namespace ASAServerManager {
 			Functions::Function_Handler::Open_curseforge_Website();
 		}
 		private: System::Void Save_ASA_Manager_Config_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			Create_Config();
 		}
 		private: System::Void Install_Update_ASA_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
 		

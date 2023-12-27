@@ -67,4 +67,24 @@ namespace Functions {
         }
         return result;
     }
+    System::Boolean^ Functions::Function_Handler::Check_If_ASA_Server_Is_Running()
+    {
+        cli::array<Process^>^ processes = Process::GetProcessesByName("ArkAscendedServer");
+        Boolean^ result = false;
+        if (processes->Length > 0)
+        {
+            for (int i = 0; i < processes->Length; i++)
+            {
+                //checking to make sure there is a process ID 
+                if (processes[i]->Id > 0) {
+                    //checking to make sure the ASA server process is responding and not in the Not Responding state
+                    if (processes[i]->Responding > 0) {
+                        //ASA server is running and responding
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

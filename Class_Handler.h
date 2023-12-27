@@ -4,8 +4,8 @@ namespace XML {
 	public ref class XML_Handler : public System::Windows::Forms::Form
 	{
 		public: static System::String^ Load_XML_Config();
-		public: static System::String^ Create_XML_Config(System::String^ CreateOrUpdateMessage, System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods);
-		public: static System::String^ Update_XML_Config(System::String^ CreateOrUpdateMessage, System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods);
+		public: static System::String^ Create_XML_Config(System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods);
+		public: static System::String^ Update_XML_Config(System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods);
 	};
 }
 namespace Batch {
@@ -23,5 +23,6 @@ namespace Functions {
 		public: static System::Void Open_curseforge_Website();
 		public: static System::Void Open_Donation_Website();
 		public: static System::String^ Open_Browse_Window();
+		public: static System::Boolean^ Check_If_ASA_Server_Is_Running();
 	};
 }
