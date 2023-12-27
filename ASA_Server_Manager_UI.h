@@ -1,6 +1,5 @@
 #pragma once
 #include "Class_Handler.h"
-#include <windows.h>
 
 namespace ASAServerManager {
 
@@ -671,7 +670,7 @@ namespace ASAServerManager {
 
 			}
 		#pragma endregion
-		System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
+		private: System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
 
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
 			Load_Config();
@@ -689,9 +688,12 @@ namespace ASAServerManager {
 			ASA_Server_Check_Tick->Start();
 		}
 		private: System::Void Server_Check_Tick(System::Object^ sender, System::EventArgs^ e) {
-			Server_Crashed_Check_progressBar->Value = 1;
+			Server_Crashed_Check_progressBar->Value += 1;
 			if (Server_Crashed_Check_progressBar->Value == 100) {
 				Server_Crashed_Check_progressBar->Value = 0;
+				if (!Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
+
+				}
 			}
 		}
 		//-----------------------------------------------------------------

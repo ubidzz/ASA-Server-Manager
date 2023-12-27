@@ -87,4 +87,16 @@ namespace Functions {
         }
         return result;
     }
+    System::Void Functions::Function_Handler::Start_ASA_Server()
+    {
+        System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
+        ProcessStartInfo^ StartServer = gcnew ProcessStartInfo();
+        StartServer->FileName = "Powershell.exe";
+        StartServer->UseShellExecute = false;
+        StartServer->CreateNoWindow = true;
+        StartServer->Arguments = "Start-Process ASA_Manager_Config/ASA_Start_Server.bat";
+        StartServer->WindowStyle = ProcessWindowStyle::Hidden;
+        process->StartInfo = StartServer;
+        process->Start();
+    }
 }
