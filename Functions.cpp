@@ -78,7 +78,7 @@ namespace Functions {
                 //checking to make sure there is a process ID 
                 if (processes[i]->Id > 0) {
                     //checking to make sure the ASA server process is responding and not in the Not Responding state
-                    if (processes[i]->Responding > 0) {
+                    if (processes[i]->Responding) {
                         //ASA server is running and responding
                         result = true;
                     }
@@ -97,6 +97,21 @@ namespace Functions {
         StartServer->Arguments = "Start-Process ASA_Manager_Config/ASA_Start_Server.bat";
         StartServer->WindowStyle = ProcessWindowStyle::Hidden;
         process->StartInfo = StartServer;
-        process->Start();
+        process->Start(); 
+    }
+    System::Void Functions::Function_Handler::Stop_ASA_Server()
+    {
+        if (Check_If_ASA_Server_Is_Running())
+        {
+            System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
+            ProcessStartInfo^ StartServer = gcnew ProcessStartInfo();
+            StartServer->FileName = "Powershell.exe";
+            StartServer->UseShellExecute = false;
+            StartServer->CreateNoWindow = true;
+            StartServer->Arguments = "Stop-Process -name ArkAscendedServer";
+            StartServer->WindowStyle = ProcessWindowStyle::Hidden;
+            process->StartInfo = StartServer;
+            process->Start();
+        }
     }
 }

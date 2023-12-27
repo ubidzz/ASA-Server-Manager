@@ -25,5 +25,6 @@ namespace Functions {
 		public: static System::String^ Open_Browse_Window();
 		public: static System::Boolean^ Check_If_ASA_Server_Is_Running();
 		public: static System::Void Start_ASA_Server();
+		public: static System::Void Stop_ASA_Server();
 	};
 }

@@ -675,7 +675,6 @@ namespace ASAServerManager {
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
 			Load_Config();
 		}
-		//-------------------------------------------------------------
 		private: System::Void Stop_Server_Check_Timer(void) {
 			ASA_Server_Check_Tick->Stop();
 			Server_Crashed_Check_progressBar->Value = 0;
@@ -692,11 +691,10 @@ namespace ASAServerManager {
 			if (Server_Crashed_Check_progressBar->Value == 100) {
 				Server_Crashed_Check_progressBar->Value = 0;
 				if (!Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
-
+					Functions::Function_Handler::Start_ASA_Server();
 				}
 			}
 		}
-		//-----------------------------------------------------------------
 		private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window()->Trim();
 		}
