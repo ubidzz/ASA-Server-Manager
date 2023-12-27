@@ -1,5 +1,6 @@
 #pragma once
 #include "Class_Handler.h"
+#include <windows.h>
 
 namespace ASAServerManager {
 
@@ -188,6 +189,7 @@ namespace ASAServerManager {
 				this->Stop_Server_button->TabIndex = 0;
 				this->Stop_Server_button->Text = L"Stop Server";
 				this->Stop_Server_button->UseVisualStyleBackColor = false;
+				this->Stop_Server_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Stop_Server_button_Click);
 				// 
 				// Start_Server_button
 				// 
@@ -201,6 +203,7 @@ namespace ASAServerManager {
 				this->Start_Server_button->TabIndex = 1;
 				this->Start_Server_button->Text = L"Start Server";
 				this->Start_Server_button->UseVisualStyleBackColor = false;
+				this->Start_Server_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Start_Server_button_Click);
 				// 
 				// ASA_Server_Crashed_Log_label
 				// 
@@ -392,7 +395,6 @@ namespace ASAServerManager {
 				this->Map_comboBox->Name = L"Map_comboBox";
 				this->Map_comboBox->Size = System::Drawing::Size(140, 21);
 				this->Map_comboBox->TabIndex = 24;
-				this->Map_comboBox->SelectedIndex = 0;
 				// 
 				// Map_label
 				// 
@@ -443,7 +445,6 @@ namespace ASAServerManager {
 				this->Anti_Cheat_comboBox->Name = L"Anti_Cheat_comboBox";
 				this->Anti_Cheat_comboBox->Size = System::Drawing::Size(121, 21);
 				this->Anti_Cheat_comboBox->TabIndex = 29;
-				this->Anti_Cheat_comboBox->SelectedIndex = 0;
 				// 
 				// Crossplay_label
 				// 
@@ -464,7 +465,6 @@ namespace ASAServerManager {
 				this->Crossplay_comboBox->Name = L"Crossplay_comboBox";
 				this->Crossplay_comboBox->Size = System::Drawing::Size(121, 21);
 				this->Crossplay_comboBox->TabIndex = 31;
-				this->Crossplay_comboBox->SelectedIndex = 1;
 				// 
 				// Admin_Password_label
 				// 
@@ -503,7 +503,6 @@ namespace ASAServerManager {
 				this->RCON_Enable_comboBox->Name = L"RCON_Enable_comboBox";
 				this->RCON_Enable_comboBox->Size = System::Drawing::Size(90, 21);
 				this->RCON_Enable_comboBox->TabIndex = 35;
-				this->RCON_Enable_comboBox->SelectedIndex = 1;
 				// 
 				// RCON_Port_label
 				// 
@@ -672,9 +671,30 @@ namespace ASAServerManager {
 
 			}
 		#pragma endregion
+		System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
+
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
 			Load_Config();
 		}
+		//-------------------------------------------------------------
+		private: System::Void Stop_Server_Check_Timer(void) {
+			ASA_Server_Check_Tick->Stop();
+			Server_Crashed_Check_progressBar->Value = 0;
+		}
+		private: System::Void Start_Server_Check_Timer(void) {
+			ASA_Server_Check_Tick = gcnew System::Windows::Forms::Timer();
+			ASA_Server_Check_Tick->Interval = 1200;
+			ASA_Server_Check_Tick->Enabled = true;
+			ASA_Server_Check_Tick->Tick += gcnew EventHandler(this, &ASAServerManager::ASA_Server_Manager_UI::Server_Check_Tick);
+			ASA_Server_Check_Tick->Start();
+		}
+		private: System::Void Server_Check_Tick(System::Object^ sender, System::EventArgs^ e) {
+			Server_Crashed_Check_progressBar->Value = 1;
+			if (Server_Crashed_Check_progressBar->Value == 100) {
+				Server_Crashed_Check_progressBar->Value = 0;
+			}
+		}
+		//-----------------------------------------------------------------
 		private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window()->Trim();
 		}
@@ -697,6 +717,12 @@ namespace ASAServerManager {
 		}
 		private: System::Void Winter_Wonderland_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Add_Mods("927090");
+		}
+		private: System::Void Start_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			Start_Server_Check_Timer();
+		}
+		private: System::Void Stop_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			Stop_Server_Check_Timer();
 		}
 	};
 }
