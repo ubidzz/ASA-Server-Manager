@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace XML {
 	public ref class XML_Handler : public System::Windows::Forms::Form
@@ -18,13 +19,17 @@ namespace Batch {
 namespace Functions {
 	public ref class Function_Handler : public System::Windows::Forms::Form
 	{
-		public: static System::Void Create_Directory(System::String^ Folder_Path);
-		public: static System::Boolean^ Check_If_Folder_Exists(System::String^ Folder_Path);
-		public: static System::Void Open_curseforge_Website();
-		public: static System::Void Open_Donation_Website();
-		public: static System::String^ Open_Browse_Window();
-		public: static System::Boolean^ Check_If_ASA_Server_Is_Running();
-		public: static System::Void Start_ASA_Server();
-		public: static System::Void Stop_ASA_Server();
+		public: 
+			static System::Void Create_Directory(System::String^ Folder_Path);
+			static System::Boolean Check_If_Folder_Exists(System::String^ Folder_Path);
+			static System::Void Open_curseforge_Website();
+			static System::Void Open_Donation_Website();
+			static System::String^ Open_Browse_Window();
+			static System::Boolean Check_If_ASA_Server_Is_Running();
+			static System::Void Start_ASA_Server();
+			static System::Void Stop_ASA_Server();
+			static System::Void Download_SteamCMD();
+			static System::Void Unzip_SteamCMD();
+			static System::Void extractZip(std::string zipPath, std::string extractPath);
 	};
 }

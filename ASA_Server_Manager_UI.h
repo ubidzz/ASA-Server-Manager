@@ -699,6 +699,12 @@ namespace ASAServerManager {
 			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window()->Trim();
 		}
 		private: System::Void Edit_GameUserSettings_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			
+			//Form^ gusF = gcnew GusForm(this);
+			//gusF->Show();
+
+			//Functions::Function_Handler::Download_SteamCMD();
+			XML::XML_Handler::Create_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->Text, Mods_textBox->Text);
 		}
 		private: System::Void Donate_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Functions::Function_Handler::Open_Donation_Website();

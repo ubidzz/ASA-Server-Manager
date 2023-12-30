@@ -147,7 +147,19 @@
   <ItemGroup>
     <Image Include="logo.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\libzip.redist.1.1.2.7\build\native\libzip.redist.targets" Condition="Exists('packages\libzip.redist.1.1.2.7\build\native\libzip.redist.targets')" />
+    <Import Project="packages\libzip.1.1.2.7\build\native\libzip.targets" Condition="Exists('packages\libzip.1.1.2.7\build\native\libzip.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\libzip.redist.1.1.2.7\build\native\libzip.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libzip.redist.1.1.2.7\build\native\libzip.redist.targets'))" />
+    <Error Condition="!Exists('packages\libzip.1.1.2.7\build\native\libzip.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libzip.1.1.2.7\build\native\libzip.targets'))" />
+  </Target>
 </Project>
