@@ -1,5 +1,6 @@
 #pragma once
 #include "Class_Handler.h"
+#include <iostream>
 
 namespace Batch {
 
@@ -95,11 +96,9 @@ namespace Batch {
 		String^ fileName = "ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat";
 		StreamWriter^ steamCMD_Bat = gcnew StreamWriter(fileName);
 		steamCMD_Bat->WriteLine("@ECHO OFF");
-		steamCMD_Bat->WriteLine("");
-		steamCMD_Bat->WriteLine("start /B ASA_Manager_Config\SteamCMD\steamcmd.exe +force_install_dir \"" + Server_Folder_Path + "\" +login anonymous +app_update 2430930 validate +quit");
-		steamCMD_Bat->WriteLine("start /B \"\" \"ASA Server Manager.exe\"");
-		steamCMD_Bat->WriteLine("");
+		steamCMD_Bat->WriteLine("start /B ASA_Manager_Config\\SteamCMD\\steamcmd.exe +force_install_dir \"" + Server_Folder_Path + "\" +login anonymous +app_update 2430930 validate +quit");
 		steamCMD_Bat->WriteLine("exit");
+		steamCMD_Bat->Close();
 		return "";
 	}
 }

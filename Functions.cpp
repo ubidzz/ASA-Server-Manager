@@ -1,10 +1,12 @@
 #pragma once
 #include "Class_Handler.h"
-#include <Windows.h>
+#include <windows.h>
 #include <iostream>
 #include <string>
 #pragma comment(lib,"urlmon.lib")
 #include <msclr/marshal_cppstd.h>
+#include <fstream>
+#include <thread>
 
 namespace Functions {
 
@@ -136,7 +138,7 @@ namespace Functions {
         }
     }
 
-    System::String^ Functions::Function_Handler::Download_SteamCMD(void)
+    System::String^ Functions::Function_Handler::Download_SteamCMD(System::String^ ASA_Server_Path)
     {
         //Check if the folder exists and if not then create the folder
         if (!Check_If_Folder_Exists("ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\")) {
@@ -154,57 +156,65 @@ namespace Functions {
         switch (downloadFile)
         {
             case S_OK:
-                return Unzip_SteamCMD();
+                return Unzip_SteamCMD(ASA_Server_Path);
             break;
 			default:
                 return "Unknown error: " + Marshal::GetExceptionForHR(downloadFile)->Message;
             break;
         }
     }
-    
-    System::String^ Functions::Function_Handler::Unzip_SteamCMD(void) {
+
+    System::String^ Functions::Function_Handler::Unzip_SteamCMD(System::String^ ASA_Server_Path) {
 		// Get the path to the current executable
         System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
-        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath) + "\\";
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
 
 		// Get the full path to the zip file and extract path folder
-        String^ zipPath = directoryPath + "ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
-        String^ extractPath = directoryPath + "ASA_Manager_Config\\SteamCMD";
+        String^ zipPath = directoryPath + "\\ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
+        String^ extractPath = directoryPath + "\\ASA_Manager_Config\\SteamCMD";
 
 		// Check if the folder exists and if not then create the folder
 		if (!Functions::Function_Handler::Check_If_Folder_Exists(extractPath)) {
             Functions::Function_Handler::Create_Directory(extractPath);
 		}
 
-        try {
-            // Open the zip file for reading
-            FileStream^ fileStream = gcnew FileStream(gcnew String(marshal_as<std::string>(zipPath).c_str()), FileMode::Open, FileAccess::Read);
+        System::Diagnostics::Process^ StartProcess = gcnew System::Diagnostics::Process();
+        ProcessStartInfo^ unzipProcess = gcnew ProcessStartInfo();
+        unzipProcess->FileName = "PowerShell.exe";
+        unzipProcess->UseShellExecute = true;
+        unzipProcess->CreateNoWindow = false;
+        unzipProcess->Arguments = "Expand-Archive '" + zipPath + "' -DestinationPath '" + extractPath + "'";
+        unzipProcess->WindowStyle = ProcessWindowStyle::Hidden;
+        StartProcess->StartInfo = unzipProcess;
+        StartProcess->Start();
 
-            // Create a GZipStream to decompress the file
-            GZipStream^ gzipStream = gcnew GZipStream(fileStream, CompressionMode::Decompress);
+		Boolean^ steamcmdExists = Functions::Function_Handler::Check_If_File_Exists(extractPath + "steamcmd.exe");
+		if (steamcmdExists) {
+			// build the steamcmd install batch file
+            Batch::Batch_Hander::SteamCMD_Install_ASA_Server_Batch_File(ASA_Server_Path);
 
-            // Create a FileStream to write the decompressed file
-            String^ outputFile = Path::Combine(directoryPath, gcnew String(marshal_as<std::string>(extractPath).c_str()));
-            FileStream^ outputFileStream = gcnew FileStream(outputFile, FileMode::Create, FileAccess::ReadWrite);
+			Functions::Function_Handler::Start_Steam_Batch_File();
 
-            // Decompress the file and write it to the output file
-            cli::array<unsigned char>^ buffer = gcnew cli::array<unsigned char>(4096);
-            int bytesRead;
-            while ((bytesRead = gzipStream->Read(buffer, 0, buffer->Length)) > 0) {
-                outputFileStream->Write(buffer, 0, bytesRead);
-            }
+			return "Successfully extracted the steamcmd.exe file and will now start the steamcmd.exe to download and install the ASA Server files! \r\n\r\nA black window will open and when it close your ASA server will be fully installed!";
+		}
+		else {
+			return "Was not able to write the steamcmd.exe file to the folder: " + extractPath;
+		}
 
-            // Close the output file stream
-            outputFileStream->Close();
+    }
+    System::Void Functions::Function_Handler::Start_Steam_Batch_File(void) {
+		// Get the path to the current executable
+        System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
 
-            // Close the GZipStream and the input file stream
-            gzipStream->Close();
-            fileStream->Close();
-
-			return "Successfully downloaded the steamcmd.zip file and extracted the steamcmd.zip file!";
-        }
-        catch (Exception^ ex) {
-            return "Successfully downloaded the steamcmd.zip file but got an error extracting the steamcmd.exe file from the steamcmd.zip file! Error: " + msclr::interop::marshal_as<System::String^>((msclr::interop::marshal_as<std::string>(ex->Message)));
-        }
+		// run the steamcmd install batch file
+        System::Diagnostics::Process^ StartProcess = gcnew System::Diagnostics::Process();
+        ProcessStartInfo^ unzipProcess = gcnew ProcessStartInfo();
+        unzipProcess->FileName = directoryPath + "\\ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat";
+        unzipProcess->UseShellExecute = false;
+        unzipProcess->CreateNoWindow = false;
+        unzipProcess->WindowStyle = ProcessWindowStyle::Normal;
+        StartProcess->StartInfo = unzipProcess;
+        StartProcess->Start();
     }
 }

@@ -768,7 +768,7 @@ namespace ASAServerManager {
 			Update_Config();
 		}
 		private: System::Void Install_Update_ASA_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Manager_Status_Message(Functions::Function_Handler::Download_SteamCMD());
+			Manager_Status_Message(Functions::Function_Handler::Download_SteamCMD(Server_Install_Folder_textBox->Text));
 		}
 		private: System::Void Turkey_Triales_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Add_Mods("927083");

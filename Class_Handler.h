@@ -31,8 +31,9 @@ namespace Functions {
 			static System::Boolean Check_If_ASA_Server_Is_Running(void);
 			static System::Void Start_ASA_Server(void);
 			static System::Void Stop_ASA_Server(void);
-			static System::String^ Download_SteamCMD(void);
-			static System::String^ Unzip_SteamCMD(void);
+			static System::String^ Download_SteamCMD(System::String^ ASA_Server_Path);
+			static System::String^ Unzip_SteamCMD(System::String^ ASA_Server_Path);
 			static std::wstring ExePath(void);
+			static System::Void Start_Steam_Batch_File(void);
 	};
 }
