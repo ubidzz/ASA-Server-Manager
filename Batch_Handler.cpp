@@ -74,11 +74,11 @@ namespace Batch {
 		Server_Bat->WriteLine("rem ------- Mods -------");
 		Server_Bat->WriteLine("rem Turn on crossplay -> -crossplay");
 		Server_Bat->WriteLine("rem Turn off crossplay delete \" -crossplay \"");
-		Server_Bat->WriteLine("set ASA_MODS=-mods=" + Mods + "");
+		Server_Bat->WriteLine("set ASA_MODS=-automanagedmods -mods=" + Mods + "");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("rem -------------------------- Don't mess with the code below --------------------------");
 		Server_Bat->WriteLine("rem		Starting the server back up");
-		Server_Bat->WriteLine("START /B /high \"\" \"%ASA_PATH%%ASA_EXE%\" %ASA_MAP%?SessionName=%ASA_SERVER_NAME%?listen?ServerPassword=%ASA_JOIN_PASSWORD%?MaxPlayers=%ASA_MAX_PLAYERS%?ServerAdminPassword=%ASA_ADMIN_PASSWORD% %ASA_MODS% %ASA_BattlEye% %ASA_CROSSPLAY%");
+		Server_Bat->WriteLine("START /B /high \"\" \"%ASA_PATH%%ASA_EXE%\" %ASA_MAP%?SessionName=%ASA_SERVER_NAME%?listen?ServerPassword=%ASA_JOIN_PASSWORD%?MaxPlayers=%ASA_MAX_PLAYERS%?ServerAdminPassword=%ASA_ADMIN_PASSWORD% %ASA_MODS% %ASA_BattlEye% %ASA_CROSSPLAY% -servergamelog -game -server -log");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("exit");
 		Server_Bat->Close();

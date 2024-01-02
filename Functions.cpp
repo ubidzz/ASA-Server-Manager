@@ -296,7 +296,7 @@ namespace Functions {
             int hour12 = (timeInfo.tm_hour % 12 == 0) ? 12 : timeInfo.tm_hour % 12;
 
             // Create the backup folder name with timestamp
-            String^ backupPathStr = String::Format("{0}{1} {2:00} {3} {4}{5:00} {6}",
+            String^ backupPathStr = String::Format("{0}{1} {2:00} {3} {4}.{5:00} {6}",
                 backupFolderPath, gcnew String(monthName.c_str()), timeInfo.tm_mday, timeInfo.tm_year + 1900,
                 (amPm == "AM" && hour12 < 10) ? hour12.ToString() : hour12.ToString("00"), timeInfo.tm_min, gcnew String(amPm.c_str()));
 

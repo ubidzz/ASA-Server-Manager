@@ -1,12 +1,15 @@
 #pragma once
 #include "Class_Handler.h"
+#include <windows.h>
 
 namespace ASAServerManager {
 
 	using namespace System;
+	using namespace System::IO;
 	using namespace XML;
 	using namespace Batch;
 	using namespace Functions;
+	using namespace System::Windows::Forms;
 
 	/// <summary>
 	/// Summary for ASA_Server_Manager_UI
@@ -38,7 +41,7 @@ namespace ASAServerManager {
 		{
 			DateTime^ Timestamp = System::DateTime::Now;
 			String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
-			Displayed_Server_Crash_Logs->Text = Timestamp + " \r\nThe server has crashed and is tempting to restart the " + Server_Name_textBox->Text + " server!" + LineBrake + Displayed_Server_Crash_Logs->Text;
+			Displayed_Server_Crash_Logs->Text = Timestamp + " \r\nThe " + Server_Name_textBox->Text + " ASA server has crashed and is now tempting to restart the " + Server_Name_textBox->Text + " server!" + LineBrake + Displayed_Server_Crash_Logs->Text;
 		}
 		// Display a message in the manager status
 		private: System::Void Manager_Status_Message(String^ Message)
@@ -107,6 +110,7 @@ namespace ASAServerManager {
 					Mods_textBox->Text = innerText;
 				}
 			}
+			Manager_Status_Message("The ASA Server Manager config file was successfully loaded!");
 		}
 		private: System::Void Update_Config(void)
 		{
@@ -141,6 +145,7 @@ namespace ASAServerManager {
 				Server_Crashed_Check_progressBar->Value = 0;
 				if (!Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
 					Functions::Function_Handler::Start_ASA_Server();
+					Crash_Log_Message();
 				}
 			}
 		}
@@ -778,12 +783,21 @@ namespace ASAServerManager {
 			Add_Mods("927090");
 		}
 		private: System::Void Start_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Start_Server_Check_Timer();
-			Functions::Function_Handler::Start_ASA_Server();
+			if (!String::IsNullOrEmpty(Server_Install_Folder_textBox->Text) && Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Start_Server.bat") && Directory::Exists(Server_Install_Folder_textBox->Text + "\\ShooterGame"))
+			{
+				Start_Server_Check_Timer();
+				Functions::Function_Handler::Start_ASA_Server();
+				Manager_Status_Message("Starting the " + Server_Name_textBox->Text + "ASA Server!");
+			}
+			else {
+				System::String^ message = gcnew System::String("You may have not yet installed the ASA Server files! \r\n\r\n1. Fill out the info in the ASA Server Manager. \r\n2. Click the Save ASA Manager Config button. \r\n3. Click the Install/Update ASA Server button. \r\n4. Click the Start Server button. \r\n\r\nIf you followed these steps make sure the ASA_Start_Server.bat file exists in the ASA_Manager_Config folder!");
+				MessageBox::Show(message, "Error Starting The ASA Server!", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			}
 		}
 		private: System::Void Stop_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Stop_Server_Check_Timer();
 			Functions::Function_Handler::Stop_ASA_Server();
+			Manager_Status_Message("Stoping the " + Server_Name_textBox->Text + "ASA Server!");
 		}
 		private: System::Void Create_ASA_Server_Backup_Files_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Manager_Status_Message(Functions::Function_Handler::CreateBackup(Server_Install_Folder_textBox->Text));
