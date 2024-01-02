@@ -8,7 +8,6 @@
 #include <fstream>
 #include <thread>
 #include <cstdio>
-
 #include <chrono>
 #include <iomanip>
 
@@ -265,7 +264,7 @@ namespace Functions {
             // Check if the source folder exists
             if (!Directory::Exists(ServerFolderPath))
             {
-                throw gcnew System::ArgumentException("Source folder does not exist.");
+                return"Source folder does not exist.";
             }
 
             // Get the current time
@@ -273,10 +272,33 @@ namespace Functions {
             std::tm timeInfo;
             localtime_s(&timeInfo, &currentTime);
 
+            // Get the name of the month
+            std::string monthName;
+            switch (timeInfo.tm_mon)
+            {
+                case 0: monthName = "January"; break;
+                case 1: monthName = "February"; break;
+                case 2: monthName = "March"; break;
+                case 3: monthName = "April"; break;
+                case 4: monthName = "May"; break;
+                case 5: monthName = "June"; break;
+                case 6: monthName = "July"; break;
+                case 7: monthName = "August"; break;
+                case 8: monthName = "September"; break;
+                case 9: monthName = "October"; break;
+                case 10: monthName = "November"; break;
+                case 11: monthName = "December"; break;
+                default: monthName = "Unknown"; break;
+            }
+
+            // Determine AM/PM based on the hour
+            std::string amPm = (timeInfo.tm_hour >= 12) ? "PM" : "AM";
+            int hour12 = (timeInfo.tm_hour % 12 == 0) ? 12 : timeInfo.tm_hour % 12;
+
             // Create the backup folder name with timestamp
-            String^ backupPathStr = String::Format("{0}_backup_{1:0000}{2:00}{3:00}_{4:00}{5:00}{6:00}",
-                backupFolderPath, timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
-                timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
+            String^ backupPathStr = String::Format("{0}{1} {2:00} {3} {4}{5:00} {6}",
+                backupFolderPath, gcnew String(monthName.c_str()), timeInfo.tm_mday, timeInfo.tm_year + 1900,
+                (amPm == "AM" && hour12 < 10) ? hour12.ToString() : hour12.ToString("00"), timeInfo.tm_min, gcnew String(amPm.c_str()));
 
             // Check if the backup folder exists, if not create it
             if (!Functions::Function_Handler::Check_If_Folder_Exists(backupPathStr))
