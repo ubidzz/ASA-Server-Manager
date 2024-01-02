@@ -40,7 +40,7 @@ namespace Batch {
 		Server_Bat->WriteLine("rem -----------------------------------------------------------");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("rem With the line that says 'ASA_PATH = ' make sure it's pointed to the ASA server folder and has the '\' at the end of it.");
-		Server_Bat->WriteLine("set ASA_PATH=" + Folder_Path);
+		Server_Bat->WriteLine("set ASA_PATH=" + Folder_Path + "\\ShooterGame\\Binaries\\Win64\\");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("rem Set max players for the server");
 		Server_Bat->WriteLine("set ASA_MAX_PLAYERS=" + Max_Players);
@@ -74,26 +74,26 @@ namespace Batch {
 		Server_Bat->WriteLine("rem ------- Mods -------");
 		Server_Bat->WriteLine("rem Turn on crossplay -> -crossplay");
 		Server_Bat->WriteLine("rem Turn off crossplay delete \" -crossplay \"");
-		Server_Bat->WriteLine("set ASA_MODS=" + Mods + "");
+		Server_Bat->WriteLine("set ASA_MODS=-mods=" + Mods + "");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("rem -------------------------- Don't mess with the code below --------------------------");
 		Server_Bat->WriteLine("rem		Starting the server back up");
-		Server_Bat->WriteLine("START /B /high \"\" \"%ASA_PATH%%ASA_EXE%\" %ASA_MAP%?SessionName=%ASA_SERVER_NAME%?listen?ServerPassword=%ASA_JOIN_PASSWORD%?MaxPlayers=%ASA_MAX_PLAYERS%?ServerAdminPassword=%ASA_ADMIN_PASSWORD% %ASA_BattlEye% %ASA_CROSSPLAY% %ASA_MODS%");
+		Server_Bat->WriteLine("START /B /high \"\" \"%ASA_PATH%%ASA_EXE%\" %ASA_MAP%?SessionName=%ASA_SERVER_NAME%?listen?ServerPassword=%ASA_JOIN_PASSWORD%?MaxPlayers=%ASA_MAX_PLAYERS%?ServerAdminPassword=%ASA_ADMIN_PASSWORD% %ASA_MODS% %ASA_BattlEye% %ASA_CROSSPLAY%");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("exit");
 		Server_Bat->Close();
 
 		if (CreateOrUpdateMessage == "Create")
 		{
-			result = "The start server batch file was successfully created!";
+			result = "the start server batch file was successfully created!";
 		}
 		else {
-			result = "The start server batch file was successfully Updated!";
+			result = "the start server batch file was successfully Updated!";
 		}
 		return result;
 	}
-	System::String^ Batch::Batch_Hander::SteamCMD_Install_ASA_Server_Batch_File(System::String^ Server_Folder_Path) {
-		String^ fileName = "ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat";
+	System::String^ Batch::Batch_Hander::SteamCMD_Install_ASA_Server_Batch_File(System::String^ Server_Folder_Path, System::String^ directoryPath) {
+		String^ fileName = directoryPath + "\\ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat";
 		StreamWriter^ steamCMD_Bat = gcnew StreamWriter(fileName);
 		steamCMD_Bat->WriteLine("@ECHO OFF");
 		steamCMD_Bat->WriteLine("start /B ASA_Manager_Config\\SteamCMD\\steamcmd.exe +force_install_dir \"" + Server_Folder_Path + "\" +login anonymous +app_update 2430930 validate +quit");

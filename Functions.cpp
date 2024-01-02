@@ -7,6 +7,10 @@
 #include <msclr/marshal_cppstd.h>
 #include <fstream>
 #include <thread>
+#include <cstdio>
+
+#include <chrono>
+#include <iomanip>
 
 namespace Functions {
 
@@ -18,6 +22,7 @@ namespace Functions {
     using namespace std;
     using namespace msclr::interop;
     using namespace System::Runtime::InteropServices;
+    using namespace System::Text;
 
     std::wstring Functions::Function_Handler::ExePath(void) {
         TCHAR buffer[MAX_PATH] = { 0 };
@@ -27,14 +32,20 @@ namespace Functions {
     }
 	System::Void Functions::Function_Handler::Create_Directory(System::String^ Folder_Path)
 	{
-        if(!Check_If_Folder_Exists(Folder_Path))
+        System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
+
+        if(!Check_If_Folder_Exists(directoryPath + "\\" + Folder_Path))
         {
-            Directory::CreateDirectory(Folder_Path);
+            Directory::CreateDirectory(directoryPath + "\\" + Folder_Path);
         }
 	}
     System::Boolean Functions::Function_Handler::Check_If_File_Exists(System::String^ filePath)
     {
-        if (System::IO::File::Exists(filePath)) {
+        System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
+
+        if (System::IO::File::Exists(directoryPath + "\\" + filePath)) {
             return true;
         }
         else {
@@ -43,8 +54,11 @@ namespace Functions {
     }
     System::Boolean Functions::Function_Handler::Check_If_Folder_Exists(System::String^ Folder_Path)
     {
+        System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
+
         // Determine whether the directory exists.
-        if (Directory::Exists(Folder_Path))
+        if (Directory::Exists(directoryPath + "\\" + Folder_Path))
         {
             return true;
         }
@@ -140,27 +154,29 @@ namespace Functions {
 
     System::String^ Functions::Function_Handler::Download_SteamCMD(System::String^ ASA_Server_Path)
     {
-        //Check if the folder exists and if not then create the folder
-        if (!Check_If_Folder_Exists("ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\")) {
-            Create_Directory("ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\");
+		//check if the steamcmd.exe file exists and if not download it
+        if (Functions::Function_Handler::Check_If_File_Exists("\\ASA_Manager_Config\\SteamCMD\\steamcmd.exe")) {
+            Functions::Function_Handler::Start_SteamCMD_Batch_File();
+            return "Checking to see if there is new ASA server updates and verifying the ASA server files!";
         }
+        else {
+            std::wstring download_link = L"http://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
+            LPCWSTR download_link_LPCWSTR = download_link.c_str();
 
-        std::wstring download_link = L"http://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
-        LPCWSTR download_link_LPCWSTR = download_link.c_str();
+            std::wstring Saved_Folder = ExePath() + L"\\ASA_Manager_Config\\steamcmd.zip";
+            LPCWSTR Saved_Folder_LPCWSTR = Saved_Folder.c_str();
 
-        std::wstring Saved_Folder = ExePath() + L"\\ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
-        LPCWSTR Saved_Folder_LPCWSTR = Saved_Folder.c_str();
-
-        HRESULT downloadFile;
-        downloadFile = URLDownloadToFile(NULL, download_link_LPCWSTR, Saved_Folder_LPCWSTR, 0, NULL);
-        switch (downloadFile)
-        {
-            case S_OK:
-                return Unzip_SteamCMD(ASA_Server_Path);
-            break;
-			default:
-                return "Unknown error: " + Marshal::GetExceptionForHR(downloadFile)->Message;
-            break;
+            HRESULT downloadFile;
+            downloadFile = URLDownloadToFile(NULL, download_link_LPCWSTR, Saved_Folder_LPCWSTR, NULL, NULL);
+            switch (downloadFile)
+            {
+                case S_OK:
+                    return Unzip_SteamCMD(ASA_Server_Path);
+                    break;
+                default:
+                    return "Unknown error: " + Marshal::GetExceptionForHR(downloadFile)->Message;
+                break;
+            }
         }
     }
 
@@ -170,14 +186,15 @@ namespace Functions {
         System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
 
 		// Get the full path to the zip file and extract path folder
-        String^ zipPath = directoryPath + "\\ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
+        String^ zipPath = directoryPath + "\\ASA_Manager_Config\\steamcmd.zip";
         String^ extractPath = directoryPath + "\\ASA_Manager_Config\\SteamCMD";
 
 		// Check if the folder exists and if not then create the folder
-		if (!Functions::Function_Handler::Check_If_Folder_Exists(extractPath)) {
-            Functions::Function_Handler::Create_Directory(extractPath);
+		if (!Functions::Function_Handler::Check_If_Folder_Exists("\\ASA_Manager_Config\\SteamCMD")) {
+            Functions::Function_Handler::Create_Directory("\\ASA_Manager_Config\\SteamCMD");
 		}
 
+		// Unziping the zip file
         System::Diagnostics::Process^ StartProcess = gcnew System::Diagnostics::Process();
         ProcessStartInfo^ unzipProcess = gcnew ProcessStartInfo();
         unzipProcess->FileName = "PowerShell.exe";
@@ -187,22 +204,32 @@ namespace Functions {
         unzipProcess->WindowStyle = ProcessWindowStyle::Hidden;
         StartProcess->StartInfo = unzipProcess;
         StartProcess->Start();
+		StartProcess->WaitForExit();
 
-		Boolean^ steamcmdExists = Functions::Function_Handler::Check_If_File_Exists(extractPath + "steamcmd.exe");
-		if (steamcmdExists) {
-			// build the steamcmd install batch file
-            Batch::Batch_Hander::SteamCMD_Install_ASA_Server_Batch_File(ASA_Server_Path);
+		//making sure that the steamcmd.exe file exists before continuing on or stop here and returning an error
+		if (Functions::Function_Handler::Check_If_File_Exists("\\ASA_Manager_Config\\SteamCMD\\steamcmd.exe")) {
 
-			Functions::Function_Handler::Start_Steam_Batch_File();
+			// removing the zip file from the ASA_Manager_Config folder because we don't need it no more
+            std::string convertedString = msclr::interop::marshal_as<std::string>(zipPath);
+            const char* path = convertedString.c_str();
+            std::remove(path);
 
+			// building the steamcmd install batch file
+            Batch::Batch_Hander::SteamCMD_Install_ASA_Server_Batch_File(ASA_Server_Path, directoryPath);
+
+			//starting the steamcmd install batch file
+			Functions::Function_Handler::Start_SteamCMD_Batch_File();
+
+			//returning the success message
 			return "Successfully extracted the steamcmd.exe file and will now start the steamcmd.exe to download and install the ASA Server files! \r\n\r\nA black window will open and when it close your ASA server will be fully installed!";
 		}
 		else {
+			//returning the error message
 			return "Was not able to write the steamcmd.exe file to the folder: " + extractPath;
 		}
-
     }
-    System::Void Functions::Function_Handler::Start_Steam_Batch_File(void) {
+    System::Void Functions::Function_Handler::Start_SteamCMD_Batch_File(void) {
+
 		// Get the path to the current executable
         System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
         System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
@@ -216,5 +243,76 @@ namespace Functions {
         unzipProcess->WindowStyle = ProcessWindowStyle::Normal;
         StartProcess->StartInfo = unzipProcess;
         StartProcess->Start();
+    }
+
+    System::String^ Functions::Function_Handler::CreateBackup(System::String^ folderPath)
+    {
+        if (!Functions::Function_Handler::Check_If_Folder_Exists("ASA_Manager_Config\\Server_backups"))
+        {
+            Functions::Function_Handler::Create_Directory("ASA_Manager_Config\\Server_backups");
+        }
+
+        // Get the path to the current executable
+        System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
+
+		// full path to the backup folder and server folder
+		System::String^ backupFolderPath = directoryPath + "\\ASA_Manager_Config\\Server_backups\\";
+		System::String^ ServerFolderPath = folderPath + "\\ShooterGame\\Saved";
+
+        try
+        {
+            // Check if the source folder exists
+            if (!Directory::Exists(ServerFolderPath))
+            {
+                throw gcnew System::ArgumentException("Source folder does not exist.");
+            }
+
+            // Get the current time
+            auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+            std::tm timeInfo;
+            localtime_s(&timeInfo, &currentTime);
+
+            // Create the backup folder name with timestamp
+            String^ backupPathStr = String::Format("{0}_backup_{1:0000}{2:00}{3:00}_{4:00}{5:00}{6:00}",
+                backupFolderPath, timeInfo.tm_year + 1900, timeInfo.tm_mon + 1, timeInfo.tm_mday,
+                timeInfo.tm_hour, timeInfo.tm_min, timeInfo.tm_sec);
+
+            // Check if the backup folder exists, if not create it
+            if (!Functions::Function_Handler::Check_If_Folder_Exists(backupPathStr))
+            {
+                Directory::CreateDirectory(backupPathStr);
+            }
+
+            // Copy all files and subfolders recursively
+            CopyFilesAndSubfolders(ServerFolderPath, backupPathStr);
+
+            // Backup completed
+			return "Backup created successfully at: " + backupPathStr;
+        }
+        catch (const std::exception& ex)
+        {
+            // Handle any exceptions and display error message
+			return gcnew System::String(ex.what());
+        }
+    }
+    System::Void Functions::Function_Handler::CopyFilesAndSubfolders(System::String^ sourcePath, System::String^ destinationPath)
+    {
+        // Copy all files in the source folder to the destination folder
+        for each (String ^ filePath in Directory::GetFiles(sourcePath))
+        {
+            String^ fileName = Path::GetFileName(filePath);
+            String^ destinationFilePath = Path::Combine(destinationPath, fileName);
+            File::Copy(filePath, destinationFilePath, true);
+        }
+
+        // Recursively copy all subfolders
+        for each (String ^ subfolderPath in Directory::GetDirectories(sourcePath))
+        {
+            String^ subfolderName = Path::GetFileName(subfolderPath);
+            String^ destinationSubfolderPath = Path::Combine(destinationPath, subfolderName);
+            Directory::CreateDirectory(destinationSubfolderPath);
+            CopyFilesAndSubfolders(subfolderPath, destinationSubfolderPath);
+        }
     }
 }

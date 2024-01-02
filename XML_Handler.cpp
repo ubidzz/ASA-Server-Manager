@@ -30,7 +30,7 @@ namespace XML {
 	System::Void XML::XML_Handler::Create_XML_Config(void){
 
 		//Create default config folder
-		Functions::Function_Handler::Create_Directory("ASA_Manager_Config\\");
+		Functions::Function_Handler::Create_Directory("ASA_Manager_Config");
 
 		System::Xml::XmlDocument^ Doc = gcnew System::Xml::XmlDocument();
 		XmlDeclaration^ dec = Doc->CreateXmlDeclaration("1.0", "UTF-8", nullptr);
@@ -89,7 +89,7 @@ namespace XML {
 		Doc->Save("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml");
 	}
 
-	System::Void XML::XML_Handler::Update_XML_Config(System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods, System::String^ Enable_RCON, System::String^ RCON_Port) {
+	System::String^ XML::XML_Handler::Update_XML_Config(System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods, System::String^ Enable_RCON, System::String^ RCON_Port) {
 		System::Xml::XmlDocument^ Doc = gcnew System::Xml::XmlDocument();
 		XmlDeclaration^ dec = Doc->CreateXmlDeclaration("1.0", "UTF-8", nullptr);
 		Doc->AppendChild(dec);
@@ -145,5 +145,15 @@ namespace XML {
 		Settings_Tag->AppendChild(Mods_Tag);
 
 		Doc->Save("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml");
+
+		System::String^ result;
+		if (Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat")) {
+			result = "update";
+		}
+		else {
+			result = "Create";
+		}
+		System::String^ returnResult = Batch::Batch_Hander::Build_Batch_Start_Server_File(result, Folder_Path, Max_Players, Server_Name, Server_Password, Admin_Password, Map, Enable_BattleEye, Enable_Crossplay, Mods);
+		return returnResult;
 	}
 }

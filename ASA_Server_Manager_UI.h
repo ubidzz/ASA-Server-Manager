@@ -83,22 +83,22 @@ namespace ASAServerManager {
 					Server_Password_textBox->Text = innerText;
 				}
 				else if (elementName == "Map") {
-					Map_comboBox->SelectedText = innerText;
+					Map_comboBox->SelectedItem = innerText;
 				}
 				else if (elementName == "Max_Players") {
 					Max_Players_textBox->Text = innerText;
 				}
 				else if (elementName == "BattlEye") {
-					Anti_Cheat_comboBox->SelectedText = innerText;
+					Anti_Cheat_comboBox->SelectedItem = innerText;
 				}
 				else if (elementName == "Crossplay") {
-					Crossplay_comboBox->SelectedText = innerText;
+					Crossplay_comboBox->SelectedItem = innerText;
 				}
 				else if (elementName == "Admin_Password") {
 					Admin_Password_textBox->Text = innerText;
 				}
 				else if (elementName == "RCON_Enable") {
-					RCON_Enable_comboBox->SelectedText = innerText;
+					RCON_Enable_comboBox->SelectedItem = innerText;
 				}
 				else if (elementName == "RCON_Port") {
 					RCON_Port_textBox->Text = innerText;
@@ -110,8 +110,8 @@ namespace ASAServerManager {
 		}
 		private: System::Void Update_Config(void)
 		{
-			XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, dynamic_cast<String^>(Map_comboBox->SelectedItem), dynamic_cast<String^>(Anti_Cheat_comboBox->SelectedItem), dynamic_cast<String^>(Crossplay_comboBox->SelectedItem), Mods_textBox->Text, dynamic_cast<String^>(RCON_Enable_comboBox->SelectedItem), RCON_Port_textBox->Text);
-			Manager_Status_Message("The ASA Server Manager config file was created successfully!");
+			System::String^ result = XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, dynamic_cast<String^>(Map_comboBox->SelectedItem), dynamic_cast<String^>(Anti_Cheat_comboBox->SelectedItem), dynamic_cast<String^>(Crossplay_comboBox->SelectedItem), Mods_textBox->Text, dynamic_cast<String^>(RCON_Enable_comboBox->SelectedItem), RCON_Port_textBox->Text);
+			Manager_Status_Message("The ASA Server Manager config file was updated successfully and the " + result + "!");
 		}
 		private: System::Void Create_Config(void)
 		{
@@ -123,6 +123,7 @@ namespace ASAServerManager {
 				Manager_Status_Message("The ASA Server Manager encountered a unknown error while trying to create the ASA Server Manager config file!");
 			}
 		}
+		private: System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
 		private: System::Void Stop_Server_Check_Timer(void) {
 			ASA_Server_Check_Tick->Stop();
 			Server_Crashed_Check_progressBar->Value = 0;
@@ -261,7 +262,7 @@ namespace ASAServerManager {
 				// 
 				// Start_Server_button
 				// 
-				this->Start_Server_button->BackColor = System::Drawing::Color::Green;
+				this->Start_Server_button->BackColor = System::Drawing::Color::Lime;
 				this->Start_Server_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Start_Server_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
@@ -347,6 +348,7 @@ namespace ASAServerManager {
 				this->Create_ASA_Server_Backup_Files_button->TabIndex = 12;
 				this->Create_ASA_Server_Backup_Files_button->Text = L"Create ASA Server Backup Files";
 				this->Create_ASA_Server_Backup_Files_button->UseVisualStyleBackColor = true;
+				this->Create_ASA_Server_Backup_Files_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Create_ASA_Server_Backup_Files_button_Click);
 				// 
 				// Edit_GameUserSettings_ini_file_button
 				// 
@@ -736,10 +738,9 @@ namespace ASAServerManager {
 				this->Load += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::ASA_Server_Manager_UI_Load);
 				this->ResumeLayout(false);
 				this->PerformLayout();
+
 			}
 		#pragma endregion
-		private: System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
-
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
 			if (!Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
 				// Create the default settings and this only runs if the config file does not exist
@@ -778,9 +779,14 @@ namespace ASAServerManager {
 		}
 		private: System::Void Start_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Start_Server_Check_Timer();
+			Functions::Function_Handler::Start_ASA_Server();
 		}
 		private: System::Void Stop_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Stop_Server_Check_Timer();
+			Functions::Function_Handler::Stop_ASA_Server();
 		}
-	};
+		private: System::Void Create_ASA_Server_Backup_Files_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			Manager_Status_Message(Functions::Function_Handler::CreateBackup(Server_Install_Folder_textBox->Text));
+		}
+};
 }
