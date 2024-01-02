@@ -45,11 +45,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="logo.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="vcpkg.json" />
     <None Include="packages.config" />
   </ItemGroup>
 </Project>

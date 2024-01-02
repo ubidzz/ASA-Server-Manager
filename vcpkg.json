@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/example/vcpkg.schema.json",
+  "name": "asa-server-manager",
+  "dependencies": [
+    {
+      "name": "zlib"
+    }
+  ],
+  "builtin-baseline": "83972272512ce4ede5fc3b2ba98f6468b179f192"
+}

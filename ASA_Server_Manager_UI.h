@@ -33,18 +33,21 @@ namespace ASAServerManager {
 					delete components;
 				}
 			}
-		private: System::Void Crash_Log_Message()
+			// Display a message in the crash log
+		private: System::Void Crash_Log_Message(void)
 		{
 			DateTime^ Timestamp = System::DateTime::Now;
 			String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
 			Displayed_Server_Crash_Logs->Text = Timestamp + " \r\nThe server has crashed and is tempting to restart the " + Server_Name_textBox->Text + " server!" + LineBrake + Displayed_Server_Crash_Logs->Text;
 		}
+		// Display a message in the manager status
 		private: System::Void Manager_Status_Message(String^ Message)
 		{
 			DateTime^ Timestamp = System::DateTime::Now;
 			String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
 			Manager_Status_Messages->Text = Timestamp + "\r\n" + Message + LineBrake + Manager_Status_Messages->Text;
 		}
+		// Add mods to the mods text box
 		private: System::Void Add_Mods(String^ Mod)
 		{
 			if (Mods_textBox->Text->Contains(Mod) == false)
@@ -58,22 +61,88 @@ namespace ASAServerManager {
 				}
 			}
 		}
-		private: System::Void Load_Config()
+		// Load the XML config file if it exists
+		private: System::Void Load_Config(void)
 		{
-			String^ result = XML::XML_Handler::Load_XML_Config();
-			//Manager_Status_Message(result);
-		}
-		private: System::Void Update_Config()
-		{
-			String^ result = XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
-			Manager_Status_Message(result);
-		}
-		private: System::Void Create_Config()
-		{
-			String^ result = XML::XML_Handler::Create_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->SelectedText, Mods_textBox->Text);
-			Manager_Status_Message(result);
-		}
+			// Load the XML config file
+			System::Collections::Generic::List<System::Tuple<System::String^, System::String^>^>^ elementList = XML::XML_Handler::Load_XML_Config();
+			// Using a for loop
+			for each (System::Tuple<System::String^, System::String^>^ elementTuple in elementList)
+			{
+				System::String^ elementName = elementTuple->Item1;
+				System::String^ innerText = elementTuple->Item2;
 
+				// Process each element name and inner text
+				if (elementName == "Server_Folder_Path") {
+					Server_Install_Folder_textBox->Text = innerText;
+				}
+				else if (elementName == "Server_Name") {
+					Server_Name_textBox->Text = innerText;
+				}
+				else if (elementName == "Server_Password") {
+					Server_Password_textBox->Text = innerText;
+				}
+				else if (elementName == "Map") {
+					Map_comboBox->SelectedText = innerText;
+				}
+				else if (elementName == "Max_Players") {
+					Max_Players_textBox->Text = innerText;
+				}
+				else if (elementName == "BattlEye") {
+					Anti_Cheat_comboBox->SelectedText = innerText;
+				}
+				else if (elementName == "Crossplay") {
+					Crossplay_comboBox->SelectedText = innerText;
+				}
+				else if (elementName == "Admin_Password") {
+					Admin_Password_textBox->Text = innerText;
+				}
+				else if (elementName == "RCON_Enable") {
+					RCON_Enable_comboBox->SelectedText = innerText;
+				}
+				else if (elementName == "RCON_Port") {
+					RCON_Port_textBox->Text = innerText;
+				}
+				else if (elementName == "Mods") {
+					Mods_textBox->Text = innerText;
+				}
+			}
+		}
+		private: System::Void Update_Config(void)
+		{
+			XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, dynamic_cast<String^>(Map_comboBox->SelectedItem), dynamic_cast<String^>(Anti_Cheat_comboBox->SelectedItem), dynamic_cast<String^>(Crossplay_comboBox->SelectedItem), Mods_textBox->Text, dynamic_cast<String^>(RCON_Enable_comboBox->SelectedItem), RCON_Port_textBox->Text);
+			Manager_Status_Message("The ASA Server Manager config file was created successfully!");
+		}
+		private: System::Void Create_Config(void)
+		{
+			XML::XML_Handler::Create_XML_Config();
+			if (Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
+				Manager_Status_Message("The ASA Server Manager config file was created successfully!");
+			}
+			else {
+				Manager_Status_Message("The ASA Server Manager encountered a unknown error while trying to create the ASA Server Manager config file!");
+			}
+		}
+		private: System::Void Stop_Server_Check_Timer(void) {
+			ASA_Server_Check_Tick->Stop();
+			Server_Crashed_Check_progressBar->Value = 0;
+		}
+		private: System::Void Start_Server_Check_Timer(void) {
+			ASA_Server_Check_Tick = gcnew System::Windows::Forms::Timer();
+			ASA_Server_Check_Tick->Interval = 1200;
+			ASA_Server_Check_Tick->Enabled = true;
+			ASA_Server_Check_Tick->Tick += gcnew EventHandler(this, &ASAServerManager::ASA_Server_Manager_UI::Server_Check_Tick);
+			ASA_Server_Check_Tick->Start();
+		}
+		private: System::Void Server_Check_Tick(System::Object^ sender, System::EventArgs^ e) {
+			Server_Crashed_Check_progressBar->Value += 1;
+			if (Server_Crashed_Check_progressBar->Value == 100) {
+				Server_Crashed_Check_progressBar->Value = 0;
+				if (!Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
+					Functions::Function_Handler::Start_ASA_Server();
+				}
+			}
+		}
 		private: System::Windows::Forms::Button^ Stop_Server_button;
 		protected:
 			private: System::Windows::Forms::Button^ Start_Server_button;
@@ -117,12 +186,12 @@ namespace ASAServerManager {
 			private: System::Windows::Forms::Button^ Browse_button;
 			private: System::Windows::Forms::TextBox^ Displayed_Server_Crash_Logs;
 			private: System::Windows::Forms::TextBox^ Manager_Status_Messages;
+
 		private:
 			/// <summary>
 			/// Required designer variable.
 			/// </summary>
 			System::ComponentModel::Container ^components;
-
 			#pragma region Windows Form Designer generated code
 			/// <summary>
 			/// Required method for Designer support - do not modify
@@ -667,44 +736,27 @@ namespace ASAServerManager {
 				this->Load += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::ASA_Server_Manager_UI_Load);
 				this->ResumeLayout(false);
 				this->PerformLayout();
-
 			}
 		#pragma endregion
 		private: System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
 
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
-			Load_Config();
-		}
-		private: System::Void Stop_Server_Check_Timer(void) {
-			ASA_Server_Check_Tick->Stop();
-			Server_Crashed_Check_progressBar->Value = 0;
-		}
-		private: System::Void Start_Server_Check_Timer(void) {
-			ASA_Server_Check_Tick = gcnew System::Windows::Forms::Timer();
-			ASA_Server_Check_Tick->Interval = 1200;
-			ASA_Server_Check_Tick->Enabled = true;
-			ASA_Server_Check_Tick->Tick += gcnew EventHandler(this, &ASAServerManager::ASA_Server_Manager_UI::Server_Check_Tick);
-			ASA_Server_Check_Tick->Start();
-		}
-		private: System::Void Server_Check_Tick(System::Object^ sender, System::EventArgs^ e) {
-			Server_Crashed_Check_progressBar->Value += 1;
-			if (Server_Crashed_Check_progressBar->Value == 100) {
-				Server_Crashed_Check_progressBar->Value = 0;
-				if (!Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
-					Functions::Function_Handler::Start_ASA_Server();
-				}
+			if (!Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
+				// Create the default settings and this only runs if the config file does not exist
+				Create_Config();
+				RCON_Enable_comboBox->SelectedItem = "Off";
+				Crossplay_comboBox->SelectedItem = L"Crossplay Off";
+				Anti_Cheat_comboBox->SelectedItem = L"Battle Eye On";
+				Map_comboBox->SelectedItem = L"TheIsland_WP";
+			}
+			else {
+				Load_Config();
 			}
 		}
 		private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window()->Trim();
 		}
 		private: System::Void Edit_GameUserSettings_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			
-			//Form^ gusF = gcnew GusForm(this);
-			//gusF->Show();
-
-			//Functions::Function_Handler::Download_SteamCMD();
-			XML::XML_Handler::Create_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, Map_comboBox->SelectedText, Anti_Cheat_comboBox->SelectedText, Crossplay_comboBox->Text, Mods_textBox->Text);
 		}
 		private: System::Void Donate_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Functions::Function_Handler::Open_Donation_Website();
@@ -713,10 +765,10 @@ namespace ASAServerManager {
 			Functions::Function_Handler::Open_curseforge_Website();
 		}
 		private: System::Void Save_ASA_Manager_Config_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Create_Config();
+			Update_Config();
 		}
 		private: System::Void Install_Update_ASA_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
-		
+			Manager_Status_Message(Functions::Function_Handler::Download_SteamCMD());
 		}
 		private: System::Void Turkey_Triales_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Add_Mods("927083");

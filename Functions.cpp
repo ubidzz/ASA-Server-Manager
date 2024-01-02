@@ -1,11 +1,9 @@
 #pragma once
 #include "Class_Handler.h"
-#include<Windows.h>
+#include <Windows.h>
 #include <iostream>
-
-#include <urlmon.h>
+#include <string>
 #pragma comment(lib,"urlmon.lib")
-#include <zip.h>
 #include <msclr/marshal_cppstd.h>
 
 namespace Functions {
@@ -16,7 +14,15 @@ namespace Functions {
     using namespace System::Diagnostics;
     using namespace System::Windows::Forms;
     using namespace std;
+    using namespace msclr::interop;
+    using namespace System::Runtime::InteropServices;
 
+    std::wstring Functions::Function_Handler::ExePath(void) {
+        TCHAR buffer[MAX_PATH] = { 0 };
+        GetModuleFileName(NULL, buffer, MAX_PATH);
+        std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
+        return std::wstring(buffer).substr(0, pos);
+    }
 	System::Void Functions::Function_Handler::Create_Directory(System::String^ Folder_Path)
 	{
         if(!Check_If_Folder_Exists(Folder_Path))
@@ -24,6 +30,15 @@ namespace Functions {
             Directory::CreateDirectory(Folder_Path);
         }
 	}
+    System::Boolean Functions::Function_Handler::Check_If_File_Exists(System::String^ filePath)
+    {
+        if (System::IO::File::Exists(filePath)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     System::Boolean Functions::Function_Handler::Check_If_Folder_Exists(System::String^ Folder_Path)
     {
         // Determine whether the directory exists.
@@ -35,7 +50,7 @@ namespace Functions {
             return false;
         }
     }
-    System::Void Functions::Function_Handler::Open_curseforge_Website()
+    System::Void Functions::Function_Handler::Open_curseforge_Website(void)
     {
         System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
         ProcessStartInfo^ DonationProcess = gcnew ProcessStartInfo();
@@ -47,7 +62,7 @@ namespace Functions {
         process->StartInfo = DonationProcess;
         process->Start();
     }
-    System::Void Functions::Function_Handler::Open_Donation_Website()
+    System::Void Functions::Function_Handler::Open_Donation_Website(void)
     {
         System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
         ProcessStartInfo^ DonationProcess = gcnew ProcessStartInfo();
@@ -59,7 +74,7 @@ namespace Functions {
         process->StartInfo = DonationProcess;
         process->Start();
     }
-    System::String^ Functions::Function_Handler::Open_Browse_Window()
+    System::String^ Functions::Function_Handler::Open_Browse_Window(void)
     {
         String^ result;
         FolderBrowserDialog^ SelectFolderDialog = gcnew FolderBrowserDialog();
@@ -76,7 +91,7 @@ namespace Functions {
         }
         return result;
     }
-    System::Boolean Functions::Function_Handler::Check_If_ASA_Server_Is_Running()
+    System::Boolean Functions::Function_Handler::Check_If_ASA_Server_Is_Running(void)
     {
         cli::array<Process^>^ processes = Process::GetProcessesByName("ArkAscendedServer");
         Boolean result = false;
@@ -93,7 +108,7 @@ namespace Functions {
         }
         return result;
     }
-    System::Void Functions::Function_Handler::Start_ASA_Server()
+    System::Void Functions::Function_Handler::Start_ASA_Server(void)
     {
         System::Diagnostics::Process^ process = gcnew System::Diagnostics::Process();
         ProcessStartInfo^ StartServer = gcnew ProcessStartInfo();
@@ -105,7 +120,7 @@ namespace Functions {
         process->StartInfo = StartServer;
         process->Start(); 
     }
-    System::Void Functions::Function_Handler::Stop_ASA_Server()
+    System::Void Functions::Function_Handler::Stop_ASA_Server(void)
     {
         if (Check_If_ASA_Server_Is_Running())
         {
@@ -120,102 +135,76 @@ namespace Functions {
             process->Start();
         }
     }
-    // Working on this one function but stuck on it
-    System::Void Functions::Function_Handler::Download_SteamCMD(void)
-    {
-        LPCWSTR download_link = L"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
-        LPCWSTR Saved_Folder = L"ASA_Manager_Config\\SteamCMD_Zip\\";
 
+    System::String^ Functions::Function_Handler::Download_SteamCMD(void)
+    {
         //Check if the folder exists and if not then create the folder
         if (!Check_If_Folder_Exists("ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\")) {
             Create_Directory("ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\");
         }
 
+        std::wstring download_link = L"http://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
+        LPCWSTR download_link_LPCWSTR = download_link.c_str();
+
+        std::wstring Saved_Folder = ExePath() + L"\\ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
+        LPCWSTR Saved_Folder_LPCWSTR = Saved_Folder.c_str();
+
         HRESULT downloadFile;
-        downloadFile = URLDownloadToFile(NULL, download_link, Saved_Folder, NULL, NULL);
+        downloadFile = URLDownloadToFile(NULL, download_link_LPCWSTR, Saved_Folder_LPCWSTR, 0, NULL);
         switch (downloadFile)
         {
             case S_OK:
-                //Unzip_SteamCMD(); <-- make function
-                break;
-            case E_OUTOFMEMORY:
-                MessageBox::Show("Ran out of memory while download the SteamCMD zip file!");
+                return Unzip_SteamCMD();
             break;
-            case INET_E_DOWNLOAD_FAILURE:
-                MessageBox::Show("Filed to download SteamCMD.zip file!");
+			default:
+                return "Unknown error: " + Marshal::GetExceptionForHR(downloadFile)->Message;
             break;
         }
     }
-    System::Void Functions::Function_Handler::Unzip_SteamCMD(void)
-    {
-        string zipPath = "ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
-        string extractPath = "ASA_Manager_Config\\SteamCMD\\";
-        //Check if the folder exists and if not then create the folder
-        if (!Check_If_Folder_Exists(msclr::interop::marshal_as<System::String^>(extractPath))) {
-            Create_Directory(msclr::interop::marshal_as<System::String^>(extractPath));
-        }
-        extractZip(zipPath, extractPath);
-    }
+    
+    System::String^ Functions::Function_Handler::Unzip_SteamCMD(void) {
+		// Get the path to the current executable
+        System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+        System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath) + "\\";
 
-    System::Void Functions::Function_Handler::extractZip(string zipPath, string extractPath) {
-        // Open the zip archive
-        zip* archive = zip_open(zipPath.c_str(), 0, nullptr);
+		// Get the full path to the zip file and extract path folder
+        String^ zipPath = directoryPath + "ASA_Manager_Config\\Downloaded_SteamCMD_Zip\\steamcmd.zip";
+        String^ extractPath = directoryPath + "ASA_Manager_Config\\SteamCMD";
 
-        // Check if the archive was opened successfully
-        if (archive == nullptr) {
-            // Handle error opening the archive
-            return;
-        }
+		// Check if the folder exists and if not then create the folder
+		if (!Functions::Function_Handler::Check_If_Folder_Exists(extractPath)) {
+            Functions::Function_Handler::Create_Directory(extractPath);
+		}
 
-        // Get the number of entries in the archive
-        int numEntries = zip_get_num_entries(archive, 0);
+        try {
+            // Open the zip file for reading
+            FileStream^ fileStream = gcnew FileStream(gcnew String(marshal_as<std::string>(zipPath).c_str()), FileMode::Open, FileAccess::Read);
 
-        // Extract all entries in the archive
-        for (int i = 0; i < numEntries; i++) {
-            // Get the name of the entry
-            const char* entryName = zip_get_name(archive, i, 0);
+            // Create a GZipStream to decompress the file
+            GZipStream^ gzipStream = gcnew GZipStream(fileStream, CompressionMode::Decompress);
 
-            // Build the full path for extracting the entry
-            std::string entryPath = extractPath + "/" + std::string(entryName);
+            // Create a FileStream to write the decompressed file
+            String^ outputFile = Path::Combine(directoryPath, gcnew String(marshal_as<std::string>(extractPath).c_str()));
+            FileStream^ outputFileStream = gcnew FileStream(outputFile, FileMode::Create, FileAccess::ReadWrite);
 
-            // Open the entry for reading
-            zip_file* entry = zip_fopen_index(archive, i, 0);
-
-            // Check if the entry was opened successfully
-            if (entry == nullptr) {
-                // Handle error opening the entry
-                continue;
+            // Decompress the file and write it to the output file
+            cli::array<unsigned char>^ buffer = gcnew cli::array<unsigned char>(4096);
+            int bytesRead;
+            while ((bytesRead = gzipStream->Read(buffer, 0, buffer->Length)) > 0) {
+                outputFileStream->Write(buffer, 0, bytesRead);
             }
 
-            // Create the directory for the entry if it doesn't exist
-            string entryDirectory = entryPath.substr(0, entryPath.find_last_of("/\\"));
-            Create_Directory(msclr::interop::marshal_as<System::String^>(entryDirectory));
+            // Close the output file stream
+            outputFileStream->Close();
 
-            // Open the output file for writing
-            FILE* outputFile = fopen(entryPath.c_str(), "wb");
+            // Close the GZipStream and the input file stream
+            gzipStream->Close();
+            fileStream->Close();
 
-            // Check if the output file was opened successfully
-            if (outputFile == nullptr) {
-                // Handle error opening the output file
-                zip_fclose(entry);
-                continue;
-            }
-
-            // Read and write the contents of the entry
-            zip_int64_t bytesRead;
-            char buffer[1024];
-            while ((bytesRead = zip_fread(entry, buffer, sizeof(buffer))) > 0) {
-                fwrite(buffer, 1, bytesRead, outputFile);
-            }
-
-            // Close the output file
-            fclose(outputFile);
-
-            // Close the entry
-            zip_fclose(entry);
+			return "Successfully downloaded the steamcmd.zip file and extracted the steamcmd.zip file!";
         }
-
-        // Close the archive
-        zip_close(archive);
+        catch (Exception^ ex) {
+            return "Successfully downloaded the steamcmd.zip file but got an error extracting the steamcmd.exe file from the steamcmd.zip file! Error: " + msclr::interop::marshal_as<System::String^>((msclr::interop::marshal_as<std::string>(ex->Message)));
+        }
     }
 }
