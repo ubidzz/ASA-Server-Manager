@@ -1,6 +1,9 @@
 #pragma once
 #include "Class_Handler.h"
 #include <windows.h>
+#include <msclr\marshal.h>
+#include <msclr\marshal_cppstd.h>
+#include <vcclr.h>
 
 namespace ASAServerManager {
 
@@ -10,6 +13,7 @@ namespace ASAServerManager {
 	using namespace Batch;
 	using namespace Functions;
 	using namespace System::Windows::Forms;
+	using namespace msclr::interop;
 
 	/// <summary>
 	/// Summary for ASA_Server_Manager_UI
@@ -127,7 +131,6 @@ namespace ASAServerManager {
 				Manager_Status_Message("The ASA Server Manager encountered a unknown error while trying to create the ASA Server Manager config file!");
 			}
 		}
-		private: System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
 		private: System::Void Stop_Server_Check_Timer(void) {
 			ASA_Server_Check_Tick->Stop();
 			Server_Crashed_Check_progressBar->Value = 0;
@@ -149,8 +152,10 @@ namespace ASAServerManager {
 				}
 			}
 		}
-		private: System::Windows::Forms::Button^ Stop_Server_button;
 		protected:
+			private: System::Windows::Forms::Button^ info_1_button;
+			private: System::Windows::Forms::Timer^ ASA_Server_Check_Tick;
+			private: System::Windows::Forms::Button^ Stop_Server_button;
 			private: System::Windows::Forms::Button^ Start_Server_button;
 			private: System::Windows::Forms::Label^ ASA_Server_Crashed_Log_label;
 			private: System::Windows::Forms::Label^ Manager_Status_label;
@@ -248,6 +253,7 @@ namespace ASAServerManager {
 				this->Browse_button = (gcnew System::Windows::Forms::Button());
 				this->Displayed_Server_Crash_Logs = (gcnew System::Windows::Forms::TextBox());
 				this->Manager_Status_Messages = (gcnew System::Windows::Forms::TextBox());
+				this->info_1_button = (gcnew System::Windows::Forms::Button());
 				this->SuspendLayout();
 				// 
 				// Stop_Server_button
@@ -303,7 +309,7 @@ namespace ASAServerManager {
 				// 
 				// Server_Crashed_Check_progressBar
 				// 
-				this->Server_Crashed_Check_progressBar->Location = System::Drawing::Point(815, 368);
+				this->Server_Crashed_Check_progressBar->Location = System::Drawing::Point(815, 376);
 				this->Server_Crashed_Check_progressBar->Name = L"Server_Crashed_Check_progressBar";
 				this->Server_Crashed_Check_progressBar->Size = System::Drawing::Size(257, 23);
 				this->Server_Crashed_Check_progressBar->TabIndex = 8;
@@ -313,7 +319,7 @@ namespace ASAServerManager {
 				this->Server_Crashed_Check_label->AutoSize = true;
 				this->Server_Crashed_Check_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->Server_Crashed_Check_label->Location = System::Drawing::Point(866, 350);
+				this->Server_Crashed_Check_label->Location = System::Drawing::Point(866, 353);
 				this->Server_Crashed_Check_label->Name = L"Server_Crashed_Check_label";
 				this->Server_Crashed_Check_label->Size = System::Drawing::Size(148, 15);
 				this->Server_Crashed_Check_label->TabIndex = 9;
@@ -321,6 +327,7 @@ namespace ASAServerManager {
 				// 
 				// Save_ASA_Manager_Config_button
 				// 
+				this->Save_ASA_Manager_Config_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Save_ASA_Manager_Config_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Save_ASA_Manager_Config_button->Location = System::Drawing::Point(12, 417);
@@ -333,6 +340,7 @@ namespace ASAServerManager {
 				// 
 				// Install_Update_ASA_Server_button
 				// 
+				this->Install_Update_ASA_Server_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Install_Update_ASA_Server_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Install_Update_ASA_Server_button->Location = System::Drawing::Point(189, 417);
@@ -345,6 +353,7 @@ namespace ASAServerManager {
 				// 
 				// Create_ASA_Server_Backup_Files_button
 				// 
+				this->Create_ASA_Server_Backup_Files_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Create_ASA_Server_Backup_Files_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Create_ASA_Server_Backup_Files_button->Location = System::Drawing::Point(376, 417);
@@ -357,6 +366,7 @@ namespace ASAServerManager {
 				// 
 				// Edit_GameUserSettings_ini_file_button
 				// 
+				this->Edit_GameUserSettings_ini_file_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Edit_GameUserSettings_ini_file_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Edit_GameUserSettings_ini_file_button->Location = System::Drawing::Point(582, 417);
@@ -369,6 +379,7 @@ namespace ASAServerManager {
 				// 
 				// Edit_Game_ini_file_button
 				// 
+				this->Edit_Game_ini_file_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Edit_Game_ini_file_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Edit_Game_ini_file_button->Location = System::Drawing::Point(772, 417);
@@ -377,9 +388,11 @@ namespace ASAServerManager {
 				this->Edit_Game_ini_file_button->TabIndex = 14;
 				this->Edit_Game_ini_file_button->Text = L"Edit Game.ini file";
 				this->Edit_Game_ini_file_button->UseVisualStyleBackColor = true;
+				this->Edit_Game_ini_file_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Edit_Game_ini_file_button_Click);
 				// 
 				// Donate_button
 				// 
+				this->Donate_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Donate_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 					static_cast<System::Byte>(0)));
 				this->Donate_button->Location = System::Drawing::Point(986, 408);
@@ -611,6 +624,7 @@ namespace ASAServerManager {
 				// Open_Curseforge_Website_button
 				// 
 				this->Open_Curseforge_Website_button->BackColor = System::Drawing::Color::Aqua;
+				this->Open_Curseforge_Website_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Open_Curseforge_Website_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Open_Curseforge_Website_button->Location = System::Drawing::Point(316, 264);
@@ -623,6 +637,7 @@ namespace ASAServerManager {
 				// 
 				// Turkey_Triales_button
 				// 
+				this->Turkey_Triales_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Turkey_Triales_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Turkey_Triales_button->Location = System::Drawing::Point(12, 314);
@@ -640,12 +655,13 @@ namespace ASAServerManager {
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Add_ASA_Events_label->Location = System::Drawing::Point(15, 295);
 				this->Add_ASA_Events_label->Name = L"Add_ASA_Events_label";
-				this->Add_ASA_Events_label->Size = System::Drawing::Size(100, 13);
+				this->Add_ASA_Events_label->Size = System::Drawing::Size(144, 13);
 				this->Add_ASA_Events_label->TabIndex = 41;
-				this->Add_ASA_Events_label->Text = L"Add ASA Events";
+				this->Add_ASA_Events_label->Text = L"Add Official ASA Events";
 				// 
 				// Winter_Wonderland_button
 				// 
+				this->Winter_Wonderland_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Winter_Wonderland_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
 				this->Winter_Wonderland_button->Location = System::Drawing::Point(117, 314);
@@ -658,6 +674,7 @@ namespace ASAServerManager {
 				// 
 				// Browse_button
 				// 
+				this->Browse_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Browse_button->Location = System::Drawing::Point(414, 35);
 				this->Browse_button->Name = L"Browse_button";
 				this->Browse_button->Size = System::Drawing::Size(75, 23);
@@ -686,13 +703,28 @@ namespace ASAServerManager {
 				this->Manager_Status_Messages->Size = System::Drawing::Size(305, 355);
 				this->Manager_Status_Messages->TabIndex = 45;
 				// 
+				// info_1_button
+				// 
+				this->info_1_button->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->info_1_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+					static_cast<System::Byte>(0)));
+				this->info_1_button->Location = System::Drawing::Point(1015, 350);
+				this->info_1_button->Name = L"info_1_button";
+				this->info_1_button->Size = System::Drawing::Size(23, 23);
+				this->info_1_button->TabIndex = 46;
+				this->info_1_button->Text = L"\?";
+				this->info_1_button->UseVisualStyleBackColor = true;
+				this->info_1_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::info_1_button_Click);
+				// 
 				// ASA_Server_Manager_UI
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+				this->AutoSize = true;
 				this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
 					static_cast<System::Int32>(static_cast<System::Byte>(255)));
 				this->ClientSize = System::Drawing::Size(1084, 452);
+				this->Controls->Add(this->info_1_button);
 				this->Controls->Add(this->Manager_Status_Messages);
 				this->Controls->Add(this->Displayed_Server_Crash_Logs);
 				this->Controls->Add(this->Browse_button);
@@ -744,12 +776,26 @@ namespace ASAServerManager {
 				this->ResumeLayout(false);
 				this->PerformLayout();
 
+				// Set the mouse hoverover tooltips on few buttons
+				System::Windows::Forms::ToolTip ^ Edit_Game_ini_file_button_tooltips = gcnew System::Windows::Forms::ToolTip();
+				Edit_Game_ini_file_button_tooltips->SetToolTip(Edit_Game_ini_file_button, "The Game.ini file will open in notpad so it can be edited.");
+
+				System::Windows::Forms::ToolTip^ Edit_GameUserSettings_ini_file_button_tooltip = gcnew System::Windows::Forms::ToolTip();
+				Edit_GameUserSettings_ini_file_button_tooltip->SetToolTip(Edit_GameUserSettings_ini_file_button, "The GameUserSettings.ini file will open in notpad so it can be edited.");
+			
+				System::Windows::Forms::ToolTip^ Donate_button_tooltip = gcnew System::Windows::Forms::ToolTip();
+				Donate_button_tooltip->SetToolTip(Donate_button, "Do you want to support the developer?");
+
+				System::Windows::Forms::ToolTip^ Create_ASA_Server_Backup_Files_button_tooltip = gcnew System::Windows::Forms::ToolTip();
+				Create_ASA_Server_Backup_Files_button_tooltip->SetToolTip(Create_ASA_Server_Backup_Files_button, "Before creating a server backup it best to stop your server due to it could couse lag on the server and it's a possibility it can corrupt your back up files!");
 			}
 		#pragma endregion
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
+			// Check if the config file exists and if it does not then create it
 			if (!Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
 				// Create the default settings and this only runs if the config file does not exist
 				Create_Config();
+				// Set the default values for the settings in the config file if the config file does not exist
 				RCON_Enable_comboBox->SelectedItem = "Off";
 				Crossplay_comboBox->SelectedItem = L"Crossplay Off";
 				Anti_Cheat_comboBox->SelectedItem = L"Battle Eye On";
@@ -757,12 +803,24 @@ namespace ASAServerManager {
 			}
 			else {
 				Load_Config();
+				// Check to see if a ASA server is already running when opeing the ASA Server Manager and if it is then start the timer
+				if (Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
+					Start_Server_Check_Timer();
+				}
 			}
 		}
 		private: System::Void Browse_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window()->Trim();
+			Server_Install_Folder_textBox->Text = Functions::Function_Handler::Open_Browse_Window();
 		}
 		private: System::Void Edit_GameUserSettings_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			System::String^ ini_Path = Server_Install_Folder_textBox->Text + "\\ShooterGame\\Saved\\Config\\WindowsServer\\GameUserSettings.ini";
+			if (System::IO::File::Exists(ini_Path)) {
+				std::wstring wstr = marshal_as<std::wstring>(ini_Path);
+				ShellExecute(NULL, L"open", L"notepad.exe", wstr.c_str(), NULL, SW_SHOWNORMAL);
+			}
+			else {
+				Manager_Status_Message("The " + ini_Path + " file dose not exists!");
+			}
 		}
 		private: System::Void Donate_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Functions::Function_Handler::Open_Donation_Website();
@@ -795,12 +853,35 @@ namespace ASAServerManager {
 			}
 		}
 		private: System::Void Stop_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Stop_Server_Check_Timer();
-			Functions::Function_Handler::Stop_ASA_Server();
-			Manager_Status_Message("Stoping the " + Server_Name_textBox->Text + "ASA Server!");
+			if (Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
+				if (ASA_Server_Check_Tick != nullptr) {
+					Stop_Server_Check_Timer();
+				}
+				Functions::Function_Handler::Stop_ASA_Server();
+				Manager_Status_Message("Stoping the " + Server_Name_textBox->Text + "ASA Server!");
+			}
+			else {
+				Manager_Status_Message("There is no ASA server running to stop!");
+			}
 		}
 		private: System::Void Create_ASA_Server_Backup_Files_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Manager_Status_Message(Functions::Function_Handler::CreateBackup(Server_Install_Folder_textBox->Text));
+			System::Windows::Forms::DialogResult result = MessageBox::Show("It is best to stop your server if it is running to create a server backup because it could cause lag and it's possible the backup files could get corrupted if the server is running. \r\n\r\nDo you want to proceed?", "Create Server Backup Warning", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
+			if (result == System::Windows::Forms::DialogResult::Yes) {
+				Manager_Status_Message(Functions::Function_Handler::CreateBackup(Server_Install_Folder_textBox->Text));
+			}
 		}
-};
+		private: System::Void Edit_Game_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			System::String^ ini_Path = Server_Install_Folder_textBox->Text + "\\ShooterGame\\Saved\\Config\\WindowsServer\\Game.ini";
+			if (System::IO::File::Exists(ini_Path)) {
+				std::wstring wstr = marshal_as<std::wstring>(ini_Path);
+				ShellExecute(NULL, L"open", L"notepad.exe", wstr.c_str(), NULL, SW_SHOWNORMAL);
+			}
+			else {
+				Manager_Status_Message("The " + ini_Path + " file dose not exists!");
+			}
+		}
+		private: System::Void info_1_button_Click(System::Object^ sender, System::EventArgs^ e) {
+			MessageBox::Show("This is a timer in till the ASA Server Manager checks if your ASA server has crashed and this will start automaticlly when you click the Start Server button. If it detects that your server has crashed or if it's Not Responding it will temp to restart your ASA server automaticlly. The Server Crashed Check will check your ASA server every 2 minutes to check if your server status is running normally.", "Server Crashed Check", MessageBoxButtons::OK, MessageBoxIcon::Information, MessageBoxDefaultButton::Button1);
+		}
+	};
 }

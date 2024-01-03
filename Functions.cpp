@@ -11,6 +11,8 @@
 #include <chrono>
 #include <iomanip>
 
+#include <cliext/utility>
+
 namespace Functions {
 
 	using namespace System;
@@ -22,6 +24,7 @@ namespace Functions {
     using namespace msclr::interop;
     using namespace System::Runtime::InteropServices;
     using namespace System::Text;
+    using namespace System::Net::Sockets;
 
     std::wstring Functions::Function_Handler::ExePath(void) {
         TCHAR buffer[MAX_PATH] = { 0 };
@@ -296,9 +299,9 @@ namespace Functions {
             int hour12 = (timeInfo.tm_hour % 12 == 0) ? 12 : timeInfo.tm_hour % 12;
 
             // Create the backup folder name with timestamp
-            String^ backupPathStr = String::Format("{0}{1} {2:00} {3} {4}.{5:00} {6}",
+            String^ backupPathStr = String::Format("{0}{1} {2} {3} {4}.{5:00} {6}",
                 backupFolderPath, gcnew String(monthName.c_str()), timeInfo.tm_mday, timeInfo.tm_year + 1900,
-                (amPm == "AM" && hour12 < 10) ? hour12.ToString() : hour12.ToString("00"), timeInfo.tm_min, gcnew String(amPm.c_str()));
+                hour12, timeInfo.tm_min, gcnew String(amPm.c_str()));
 
             // Check if the backup folder exists, if not create it
             if (!Functions::Function_Handler::Check_If_Folder_Exists(backupPathStr))
@@ -337,4 +340,97 @@ namespace Functions {
             CopyFilesAndSubfolders(subfolderPath, destinationSubfolderPath);
         }
     }
+    /*
+	//RCON function to send commands to the ASA server (Still being developed)
+    System::String^ Functions::Function_Handler::SendRconCommand(System::String^ serverIP, int serverPort, System::String^ password, System::String^ command) {
+        System::String^ serverIP = "127.0.0.1";
+        int serverPort = System::Convert::ToInt32(RCON_Port_textBox->Text);
+        System::String^ password = Admin_Password_textBox->Text;
+        System::String^ command = "SaveWorld";
+        
+        System::String^ response = nullptr;
+        TcpClient^ client = gcnew TcpClient();
+        try {
+            client->Connect(serverIP, serverPort);
+            if (client->Connected) {
+                // Get the network stream to send and receive data
+                NetworkStream^ stream = client->GetStream();
+
+                // Convert the password to bytes using ASCII encoding
+                cli::array<Byte>^ passwordBytes = Encoding::ASCII->GetBytes(password);
+
+                // Convert the command to bytes using ASCII encoding
+                cli::array<Byte>^ commandBytes = Encoding::ASCII->GetBytes(command);
+
+                // Prepare the SERVERDATA_AUTH packet
+                cli::array<Byte>^ authPacket = gcnew cli::array<Byte>(10 + passwordBytes->Length);
+                authPacket[0] = 0xFF;
+                authPacket[1] = 0xFF;
+                authPacket[2] = 0xFF;
+                authPacket[3] = 0xFF;
+
+                // Calculate the packet size
+                int authPacketSize = authPacket->Length - 4;
+
+                // Convert the packet size to bytes using little endian encoding
+                cli::array<Byte>^ authPacketSizeBytes = BitConverter::GetBytes(authPacketSize);
+
+                // Copy the packet size bytes to the authPacket array
+                Array::Copy(authPacketSizeBytes, 0, authPacket, 4, authPacketSizeBytes->Length);
+
+                authPacket[8] = 0x03; // Set the packet ID for SERVERDATA_AUTH
+                authPacket[9] = 0x00;
+                Array::Copy(passwordBytes, 0, authPacket, 10, passwordBytes->Length);
+
+                // Send the SERVERDATA_AUTH packet
+                stream->Write(authPacket, 0, authPacket->Length);
+
+                // Receive and discard the response to the SERVERDATA_AUTH packet
+                cli::array<Byte>^ discardBytes = gcnew cli::array<Byte>(4096);
+                int discardBytesRead = stream->Read(discardBytes, 0, discardBytes->Length);
+
+                // Prepare the SERVERDATA_EXECCOMMAND packet
+                cli::array<Byte>^ execCommandPacket = gcnew cli::array<Byte>(10 + passwordBytes->Length + commandBytes->Length);
+                execCommandPacket[0] = 0xFF;
+                execCommandPacket[1] = 0xFF;
+                execCommandPacket[2] = 0xFF;
+                execCommandPacket[3] = 0xFF;
+
+                // Calculate the packet size
+                int execCommandPacketSize = execCommandPacket->Length - 4;
+
+                // Convert the packet size to bytes using little endian encoding
+                cli::array<Byte>^ execCommandPacketSizeBytes = BitConverter::GetBytes(execCommandPacketSize);
+
+                // Copy the packet size bytes to the execCommandPacket array
+                Array::Copy(execCommandPacketSizeBytes, 0, execCommandPacket, 4, execCommandPacketSizeBytes->Length);
+
+                execCommandPacket[8] = 0x02; // Set the packet ID for SERVERDATA_EXECCOMMAND
+                execCommandPacket[9] = 0x00;
+                Array::Copy(passwordBytes, 0, execCommandPacket, 10, passwordBytes->Length);
+                Array::Copy(commandBytes, 0, execCommandPacket, 10 + passwordBytes->Length, commandBytes->Length);
+
+                // Send the SERVERDATA_EXECCOMMAND packet
+				stream->Write(execCommandPacket, 0, execCommandPacket->Length);
+                // Receive the response to the SERVERDATA_EXECCOMMAND packet
+                cli::array<Byte>^ responseBytes = gcnew cli::array<Byte>(4096);
+                int bytesRead = stream->Read(responseBytes, 0, responseBytes->Length);
+
+                // Convert the response bytes to a string using ASCII encoding
+                response = Encoding::ASCII->GetString(responseBytes, 0, bytesRead);
+
+                // Close the connection
+                stream->Close();
+                client->Close();
+            }
+            else {
+                response = "Error: Connection failed.";
+            }
+        }
+        catch (Exception^ ex) {
+            response = "Error: " + ex->Message;
+        }
+        return response;
+	}*/
+
 }

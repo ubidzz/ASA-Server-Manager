@@ -37,5 +37,6 @@ namespace Functions {
 			static System::Void Start_SteamCMD_Batch_File(void);
 			static System::String^ CreateBackup(System::String^ folderPath);
 			static System::Void CopyFilesAndSubfolders(System::String^ sourcePath, System::String^ destinationPath);
+			//static System::String^ SendRconCommand(System::String^ serverIP, int serverPort, System::String^ password, System::String^ command);
 	};
 }
