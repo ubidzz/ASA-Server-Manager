@@ -4,16 +4,20 @@
 #include <msclr\marshal.h>
 #include <msclr\marshal_cppstd.h>
 #include <vcclr.h>
+#include <thread>
+#include <future>
 
 namespace ASAServerManager {
 
 	using namespace System;
 	using namespace System::IO;
+	using namespace System::Threading;
+	using namespace System::Windows::Forms;
 	using namespace XML;
 	using namespace Batch;
 	using namespace Functions;
-	using namespace System::Windows::Forms;
 	using namespace msclr::interop;
+
 
 	/// <summary>
 	/// Summary for ASA_Server_Manager_UI
@@ -197,7 +201,6 @@ namespace ASAServerManager {
 			private: System::Windows::Forms::Button^ Browse_button;
 			private: System::Windows::Forms::TextBox^ Displayed_Server_Crash_Logs;
 			private: System::Windows::Forms::TextBox^ Manager_Status_Messages;
-
 		private:
 			/// <summary>
 			/// Required designer variable.
@@ -788,6 +791,7 @@ namespace ASAServerManager {
 
 				System::Windows::Forms::ToolTip^ Create_ASA_Server_Backup_Files_button_tooltip = gcnew System::Windows::Forms::ToolTip();
 				Create_ASA_Server_Backup_Files_button_tooltip->SetToolTip(Create_ASA_Server_Backup_Files_button, "Before creating a server backup it best to stop your server due to it could couse lag on the server and it's a possibility it can corrupt your back up files!");
+			
 			}
 		#pragma endregion
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
@@ -864,10 +868,34 @@ namespace ASAServerManager {
 				Manager_Status_Message("There is no ASA server running to stop!");
 			}
 		}
+		private: System::Void ASA_Server_Manager_UI::backupThreadFunction(System::Object^ obj)
+		{
+			// Retrieve the parameters from obj
+			array<System::Object^>^ params = safe_cast<array<System::Object^>^>(obj);
+			ASA_Server_Manager_UI^ uiInstance = safe_cast<ASA_Server_Manager_UI^>(params[0]);
+			std::string folderPath = marshal_as<std::string>(params[1]->ToString());
+
+			// Call the CreateBackup function
+			System::String^ result = Functions::Function_Handler::CreateBackup(gcnew System::String(folderPath.c_str()));
+
+			// Update the UI with the result
+			uiInstance->Manager_Status_Message(result);
+		}
+
 		private: System::Void Create_ASA_Server_Backup_Files_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			System::Windows::Forms::DialogResult result = MessageBox::Show("It is best to stop your server if it is running to create a server backup because it could cause lag and it's possible the backup files could get corrupted if the server is running. \r\n\r\nDo you want to proceed?", "Create Server Backup Warning", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
 			if (result == System::Windows::Forms::DialogResult::Yes) {
-				Manager_Status_Message(Functions::Function_Handler::CreateBackup(Server_Install_Folder_textBox->Text));
+				// Get the folder path from the text box
+				std::string folderPath = marshal_as<std::string>(Server_Install_Folder_textBox->Text);
+
+				// Create an array of parameters to pass to the thread function
+				array<System::Object^>^ params = gcnew array<System::Object^>(2);
+				params[0] = this;
+				params[1] = gcnew System::String(folderPath.c_str());
+
+				// Create a new thread and start it
+				Thread^ backupThread = gcnew Thread(gcnew ParameterizedThreadStart(this, &ASA_Server_Manager_UI::backupThreadFunction));
+				backupThread->Start(params);
 			}
 		}
 		private: System::Void Edit_Game_ini_file_button_Click(System::Object^ sender, System::EventArgs^ e) {
