@@ -11,8 +11,6 @@
 #include <chrono>
 #include <iomanip>
 
-#include <cliext/utility>
-
 namespace Functions {
 
 	using namespace System;
@@ -153,35 +151,68 @@ namespace Functions {
             process->Start();
         }
     }
+    System::Void Functions::Function_Handler::EditLineInFile(System::String^ filePath, System::String^ targetLine, System::String^ newLine) {
+        std::string filePathStr = msclr::interop::marshal_as<std::string>(filePath);
+        std::string targetLineStr = msclr::interop::marshal_as<std::string>(targetLine);
+        std::string newLineStr = msclr::interop::marshal_as<std::string>(newLine);
 
-    System::String^ Functions::Function_Handler::Download_SteamCMD(System::String^ ASA_Server_Path)
-    {
-		//check if the steamcmd.exe file exists and if not download it
-        if (Functions::Function_Handler::Check_If_File_Exists("\\ASA_Manager_Config\\SteamCMD\\steamcmd.exe")) {
-            Functions::Function_Handler::Start_SteamCMD_Batch_File();
-            return "Checking to see if there is new ASA server updates and verifying the ASA server files!";
+        std::ifstream inputFile(filePathStr);
+        if (!inputFile) {
+            return;
         }
-        else {
-            std::wstring download_link = L"http://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
-            LPCWSTR download_link_LPCWSTR = download_link.c_str();
 
-            std::wstring Saved_Folder = ExePath() + L"\\ASA_Manager_Config\\steamcmd.zip";
-            LPCWSTR Saved_Folder_LPCWSTR = Saved_Folder.c_str();
+        std::ofstream outputFile("temp.txt");
+        if (!outputFile) {
+            inputFile.close();
+            return;
+        }
 
-            HRESULT downloadFile;
-            downloadFile = URLDownloadToFile(NULL, download_link_LPCWSTR, Saved_Folder_LPCWSTR, NULL, NULL);
-            switch (downloadFile)
-            {
-                case S_OK:
-                    return Unzip_SteamCMD(ASA_Server_Path);
-                    break;
-                default:
-                    return "Unknown error: " + Marshal::GetExceptionForHR(downloadFile)->Message;
-                break;
+        std::string line;
+
+        while (std::getline(inputFile, line)) {
+            if (line == targetLineStr) {
+                outputFile << newLineStr << std::endl;
+            }
+            else {
+                outputFile << line << std::endl;
             }
         }
-    }
 
+        inputFile.close();
+        outputFile.close();
+
+        if (std::remove(filePathStr.c_str()) != 0) {
+            std::cerr << "Failed to remove original file: " << filePathStr << std::endl;
+            return;
+        }
+
+        if (std::rename("temp.txt", filePathStr.c_str()) != 0) {
+            std::cerr << "Failed to rename temporary file" << std::endl;
+            return;
+        }
+    }
+    System::String^ Functions::Function_Handler::Download_SteamCMD(System::String^ ASA_Server_Path)
+    {
+
+        std::wstring download_link = L"http://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip";
+        LPCWSTR download_link_LPCWSTR = download_link.c_str();
+
+        std::wstring Saved_Folder = ExePath() + L"\\ASA_Manager_Config\\steamcmd.zip";
+        LPCWSTR Saved_Folder_LPCWSTR = Saved_Folder.c_str();
+
+        HRESULT downloadFile;
+        downloadFile = URLDownloadToFile(NULL, download_link_LPCWSTR, Saved_Folder_LPCWSTR, NULL, NULL);
+        switch (downloadFile)
+        {
+            case S_OK:
+                return Unzip_SteamCMD(ASA_Server_Path);
+            break;
+            default:
+                return "Unknown error: " + Marshal::GetExceptionForHR(downloadFile)->Message;
+            break;
+        }
+
+    }
     System::String^ Functions::Function_Handler::Unzip_SteamCMD(System::String^ ASA_Server_Path) {
 		// Get the path to the current executable
         System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
@@ -221,6 +252,8 @@ namespace Functions {
 
 			//starting the steamcmd install batch file
 			Functions::Function_Handler::Start_SteamCMD_Batch_File();
+
+            INI::INI_Handler::Game_INI_File(ASA_Server_Path);
 
 			//returning the success message
 			return "Successfully extracted the steamcmd.exe file and will now start the steamcmd.exe to download and install the ASA Server files! \r\n\r\nA black window will open and when it close your ASA server will be fully installed!";
@@ -267,7 +300,7 @@ namespace Functions {
             // Check if the source folder exists
             if (!Directory::Exists(ServerFolderPath))
             {
-                return"Source folder does not exist.";
+                return "Source folder does not exist.";
             }
 
             // Get the current time

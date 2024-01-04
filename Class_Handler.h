@@ -10,6 +10,15 @@ namespace XML {
 			static System::String^ Update_XML_Config(System::String^ Folder_Path, System::String^ Max_Players, System::String^ Server_Name, System::String^ Server_Password, System::String^ Admin_Password, System::String^ Map, System::String^ Enable_BattleEye, System::String^ Enable_Crossplay, System::String^ Mods, System::String^ Enable_RCON, System::String^ RCON_Port);
 	};
 }
+namespace INI {
+	public ref class INI_Handler : public System::Windows::Forms::Form
+	{
+		public:
+			static System::Void EditLineInFile(System::String^ filePath, cli::array<System::String^>^ targetLines, const cli::array<System::String^>^ newLines);
+			static System::Void Create_INI_Game_File(const std::string&folder_path);
+			static System::Void Game_INI_File(System::String^ ASA_Server_Path);
+	};
+}
 namespace Batch {
 	public ref class Batch_Hander : public System::Windows::Forms::Form
 	{
@@ -37,6 +46,9 @@ namespace Functions {
 			static System::Void Start_SteamCMD_Batch_File(void);
 			static System::String^ CreateBackup(System::String^ folderPath);
 			static System::Void CopyFilesAndSubfolders(System::String^ sourcePath, System::String^ destinationPath);
+			static System::Void EditLineInFile(System::String^ filePath, System::String^ targetLine, System::String^ newLine);
+
+			//RCON function to send commands to the ASA server (Still being developed)
 			//static System::String^ SendRconCommand(System::String^ serverIP, int serverPort, System::String^ password, System::String^ command);
 	};
 }

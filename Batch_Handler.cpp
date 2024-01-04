@@ -9,9 +9,13 @@ namespace Batch {
 
 	System::String^ Batch::Batch_Hander::Build_Batch_Start_Server_File(String^ CreateOrUpdateMessage, String^ Folder_Path, String^ Max_Players, String^ Server_Name, String^ Server_Password, String^ Admin_Password, String^ Map, String^ Enable_BattleEye, String^ Enable_Crossplay, String^ Mods) {
 
+		System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+		System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
+
 		String^ BattleEye;
 		String^ Crossplay;
-		String^ result;
+		String^ result; 
+		String^ add_mods;
 
 		if (Enable_BattleEye == "Battle Eye On")
 		{
@@ -27,7 +31,13 @@ namespace Batch {
 		else {
 			Crossplay = "";
 		}
-		String^ fileName = "ASA_Manager_Config\\ASA_Start_Server.bat";
+		if (String::IsNullOrEmpty(Mods)) {
+			add_mods = "";
+		}
+		else {
+			add_mods = "-automanagedmods -mods=" + Mods;
+		}
+		String^ fileName = directoryPath + "//ASA_Manager_Config\\ASA_Start_Server.bat";
 		StreamWriter^ Server_Bat = gcnew StreamWriter(fileName);
 		Server_Bat->WriteLine("@ECHO OFF");
 		Server_Bat->WriteLine("");
@@ -74,7 +84,7 @@ namespace Batch {
 		Server_Bat->WriteLine("rem ------- Mods -------");
 		Server_Bat->WriteLine("rem Turn on crossplay -> -crossplay");
 		Server_Bat->WriteLine("rem Turn off crossplay delete \" -crossplay \"");
-		Server_Bat->WriteLine("set ASA_MODS=-automanagedmods -mods=" + Mods + "");
+		Server_Bat->WriteLine("set ASA_MODS=" + add_mods + "");
 		Server_Bat->WriteLine("");
 		Server_Bat->WriteLine("rem -------------------------- Don't mess with the code below --------------------------");
 		Server_Bat->WriteLine("rem		Starting the server back up");
@@ -93,12 +103,11 @@ namespace Batch {
 		return result;
 	}
 	System::String^ Batch::Batch_Hander::SteamCMD_Install_ASA_Server_Batch_File(System::String^ Server_Folder_Path, System::String^ directoryPath) {
-		String^ fileName = directoryPath + "\\ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat";
-		StreamWriter^ steamCMD_Bat = gcnew StreamWriter(fileName);
+		StreamWriter^ steamCMD_Bat = gcnew StreamWriter(directoryPath + "\\ASA_Manager_Config\\SteamCMD_Install_ASA_Server.bat");
 		steamCMD_Bat->WriteLine("@ECHO OFF");
-		steamCMD_Bat->WriteLine("start /B ASA_Manager_Config\\SteamCMD\\steamcmd.exe +force_install_dir \"" + Server_Folder_Path + "\" +login anonymous +app_update 2430930 validate +quit");
+		steamCMD_Bat->WriteLine("start /B \"\" \"" + directoryPath + "\\ASA_Manager_Config\\SteamCMD\\steamcmd.exe\" +force_install_dir \"" + Server_Folder_Path + "\" +login anonymous +app_update 2430930 validate +quit");
 		steamCMD_Bat->WriteLine("exit");
 		steamCMD_Bat->Close();
-		return "";
+		return "The SteamCMD_Install_ASA_Server.bat file was successfully created!";
 	}
 }

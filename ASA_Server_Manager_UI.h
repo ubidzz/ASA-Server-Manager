@@ -5,7 +5,6 @@
 #include <msclr\marshal_cppstd.h>
 #include <vcclr.h>
 #include <thread>
-#include <future>
 
 namespace ASAServerManager {
 
@@ -14,9 +13,11 @@ namespace ASAServerManager {
 	using namespace System::Threading;
 	using namespace System::Windows::Forms;
 	using namespace XML;
+	using namespace INI;
 	using namespace Batch;
 	using namespace Functions;
 	using namespace msclr::interop;
+	using namespace std;
 
 
 	/// <summary>
@@ -28,9 +29,6 @@ namespace ASAServerManager {
 			ASA_Server_Manager_UI(void)
 			{
 				InitializeComponent();
-				//
-				//TODO: Add the constructor code here
-				//
 			}
 
 		protected:
@@ -48,14 +46,14 @@ namespace ASAServerManager {
 		private: System::Void Crash_Log_Message(void)
 		{
 			DateTime^ Timestamp = System::DateTime::Now;
-			String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
+			String^ LineBrake = "\r\n----------------------------------------------------------------------------------------\r\n";
 			Displayed_Server_Crash_Logs->Text = Timestamp + " \r\nThe " + Server_Name_textBox->Text + " ASA server has crashed and is now tempting to restart the " + Server_Name_textBox->Text + " server!" + LineBrake + Displayed_Server_Crash_Logs->Text;
 		}
 		// Display a message in the manager status
 		private: System::Void Manager_Status_Message(String^ Message)
 		{
 			DateTime^ Timestamp = System::DateTime::Now;
-			String^ LineBrake = "\r\n-----------------------------------------------------------------------------\r\n";
+			String^ LineBrake = "\r\n------------------------------------------------------------------------------------------------------\r\n";
 			Manager_Status_Messages->Text = Timestamp + "\r\n" + Message + LineBrake + Manager_Status_Messages->Text;
 		}
 		// Add mods to the mods text box
@@ -63,7 +61,7 @@ namespace ASAServerManager {
 		{
 			if (Mods_textBox->Text->Contains(Mod) == false)
 			{
-				if (Mods_textBox->Text == "")
+				if (String::IsNullOrEmpty(Mods_textBox->Text))
 				{
 					Mods_textBox->Text = Mod;
 				}
@@ -119,21 +117,6 @@ namespace ASAServerManager {
 				}
 			}
 			Manager_Status_Message("The ASA Server Manager config file was successfully loaded!");
-		}
-		private: System::Void Update_Config(void)
-		{
-			System::String^ result = XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, dynamic_cast<String^>(Map_comboBox->SelectedItem), dynamic_cast<String^>(Anti_Cheat_comboBox->SelectedItem), dynamic_cast<String^>(Crossplay_comboBox->SelectedItem), Mods_textBox->Text, dynamic_cast<String^>(RCON_Enable_comboBox->SelectedItem), RCON_Port_textBox->Text);
-			Manager_Status_Message("The ASA Server Manager config file was updated successfully and the " + result + "!");
-		}
-		private: System::Void Create_Config(void)
-		{
-			XML::XML_Handler::Create_XML_Config();
-			if (Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
-				Manager_Status_Message("The ASA Server Manager config file was created successfully!");
-			}
-			else {
-				Manager_Status_Message("The ASA Server Manager encountered a unknown error while trying to create the ASA Server Manager config file!");
-			}
 		}
 		private: System::Void Stop_Server_Check_Timer(void) {
 			ASA_Server_Check_Tick->Stop();
@@ -201,11 +184,17 @@ namespace ASAServerManager {
 			private: System::Windows::Forms::Button^ Browse_button;
 			private: System::Windows::Forms::TextBox^ Displayed_Server_Crash_Logs;
 			private: System::Windows::Forms::TextBox^ Manager_Status_Messages;
+			private: System::Windows::Forms::ToolTip^ Create_ASA_Server_Backup_Files_button_tooltip;
+			private: System::Windows::Forms::ToolTip^ Edit_GameUserSettings_ini_file_button_tooltip;
+			private: System::Windows::Forms::ToolTip^ Edit_Game_ini_file_button_tooltips;
+			private: System::Windows::Forms::ToolTip^ Donate_button_tooltip;
+			private: System::Windows::Forms::Button^ Open_Backup_Folder_button;
+			private: System::ComponentModel::IContainer^ components;
 		private:
 			/// <summary>
 			/// Required designer variable.
 			/// </summary>
-			System::ComponentModel::Container ^components;
+
 			#pragma region Windows Form Designer generated code
 			/// <summary>
 			/// Required method for Designer support - do not modify
@@ -213,6 +202,7 @@ namespace ASAServerManager {
 			/// </summary>
 			void InitializeComponent(void)
 			{
+				this->components = (gcnew System::ComponentModel::Container());
 				System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(ASA_Server_Manager_UI::typeid));
 				this->Stop_Server_button = (gcnew System::Windows::Forms::Button());
 				this->Start_Server_button = (gcnew System::Windows::Forms::Button());
@@ -257,6 +247,11 @@ namespace ASAServerManager {
 				this->Displayed_Server_Crash_Logs = (gcnew System::Windows::Forms::TextBox());
 				this->Manager_Status_Messages = (gcnew System::Windows::Forms::TextBox());
 				this->info_1_button = (gcnew System::Windows::Forms::Button());
+				this->Edit_Game_ini_file_button_tooltips = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->Edit_GameUserSettings_ini_file_button_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->Donate_button_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->Create_ASA_Server_Backup_Files_button_tooltip = (gcnew System::Windows::Forms::ToolTip(this->components));
+				this->Open_Backup_Folder_button = (gcnew System::Windows::Forms::Button());
 				this->SuspendLayout();
 				// 
 				// Stop_Server_button
@@ -266,7 +261,7 @@ namespace ASAServerManager {
 				this->Stop_Server_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 					static_cast<System::Byte>(0)));
 				this->Stop_Server_button->ForeColor = System::Drawing::Color::Black;
-				this->Stop_Server_button->Location = System::Drawing::Point(965, 13);
+				this->Stop_Server_button->Location = System::Drawing::Point(1023, 12);
 				this->Stop_Server_button->Name = L"Stop_Server_button";
 				this->Stop_Server_button->Size = System::Drawing::Size(107, 31);
 				this->Stop_Server_button->TabIndex = 0;
@@ -280,7 +275,7 @@ namespace ASAServerManager {
 				this->Start_Server_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Start_Server_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->Start_Server_button->Location = System::Drawing::Point(851, 13);
+				this->Start_Server_button->Location = System::Drawing::Point(909, 12);
 				this->Start_Server_button->Name = L"Start_Server_button";
 				this->Start_Server_button->Size = System::Drawing::Size(108, 31);
 				this->Start_Server_button->TabIndex = 1;
@@ -293,7 +288,7 @@ namespace ASAServerManager {
 				this->ASA_Server_Crashed_Log_label->AutoSize = true;
 				this->ASA_Server_Crashed_Log_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->ASA_Server_Crashed_Log_label->Location = System::Drawing::Point(863, 55);
+				this->ASA_Server_Crashed_Log_label->Location = System::Drawing::Point(906, 57);
 				this->ASA_Server_Crashed_Log_label->Name = L"ASA_Server_Crashed_Log_label";
 				this->ASA_Server_Crashed_Log_label->Size = System::Drawing::Size(162, 15);
 				this->ASA_Server_Crashed_Log_label->TabIndex = 2;
@@ -312,9 +307,9 @@ namespace ASAServerManager {
 				// 
 				// Server_Crashed_Check_progressBar
 				// 
-				this->Server_Crashed_Check_progressBar->Location = System::Drawing::Point(815, 376);
+				this->Server_Crashed_Check_progressBar->Location = System::Drawing::Point(841, 374);
 				this->Server_Crashed_Check_progressBar->Name = L"Server_Crashed_Check_progressBar";
-				this->Server_Crashed_Check_progressBar->Size = System::Drawing::Size(257, 23);
+				this->Server_Crashed_Check_progressBar->Size = System::Drawing::Size(289, 23);
 				this->Server_Crashed_Check_progressBar->TabIndex = 8;
 				// 
 				// Server_Crashed_Check_label
@@ -322,7 +317,7 @@ namespace ASAServerManager {
 				this->Server_Crashed_Check_label->AutoSize = true;
 				this->Server_Crashed_Check_label->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->Server_Crashed_Check_label->Location = System::Drawing::Point(866, 353);
+				this->Server_Crashed_Check_label->Location = System::Drawing::Point(911, 353);
 				this->Server_Crashed_Check_label->Name = L"Server_Crashed_Check_label";
 				this->Server_Crashed_Check_label->Size = System::Drawing::Size(148, 15);
 				this->Server_Crashed_Check_label->TabIndex = 9;
@@ -359,11 +354,13 @@ namespace ASAServerManager {
 				this->Create_ASA_Server_Backup_Files_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Create_ASA_Server_Backup_Files_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->Create_ASA_Server_Backup_Files_button->Location = System::Drawing::Point(376, 417);
+				this->Create_ASA_Server_Backup_Files_button->Location = System::Drawing::Point(698, 417);
 				this->Create_ASA_Server_Backup_Files_button->Name = L"Create_ASA_Server_Backup_Files_button";
 				this->Create_ASA_Server_Backup_Files_button->Size = System::Drawing::Size(200, 23);
 				this->Create_ASA_Server_Backup_Files_button->TabIndex = 12;
 				this->Create_ASA_Server_Backup_Files_button->Text = L"Create ASA Server Backup Files";
+				this->Create_ASA_Server_Backup_Files_button_tooltip->SetToolTip(this->Create_ASA_Server_Backup_Files_button, L"Before creating a server backup it best to stop your server due to it could couse"
+					L" lag on the server and it\'s a possibility it can corrupt your back up files!");
 				this->Create_ASA_Server_Backup_Files_button->UseVisualStyleBackColor = true;
 				this->Create_ASA_Server_Backup_Files_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Create_ASA_Server_Backup_Files_button_Click);
 				// 
@@ -372,11 +369,12 @@ namespace ASAServerManager {
 				this->Edit_GameUserSettings_ini_file_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Edit_GameUserSettings_ini_file_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->Edit_GameUserSettings_ini_file_button->Location = System::Drawing::Point(582, 417);
+				this->Edit_GameUserSettings_ini_file_button->Location = System::Drawing::Point(376, 417);
 				this->Edit_GameUserSettings_ini_file_button->Name = L"Edit_GameUserSettings_ini_file_button";
 				this->Edit_GameUserSettings_ini_file_button->Size = System::Drawing::Size(184, 23);
 				this->Edit_GameUserSettings_ini_file_button->TabIndex = 13;
 				this->Edit_GameUserSettings_ini_file_button->Text = L"Edit GameUserSettings.ini file";
+				this->Edit_GameUserSettings_ini_file_button_tooltip->SetToolTip(this->Edit_GameUserSettings_ini_file_button, L"The GameUserSettings.ini file will open in notpad so it can be edited.");
 				this->Edit_GameUserSettings_ini_file_button->UseVisualStyleBackColor = true;
 				this->Edit_GameUserSettings_ini_file_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Edit_GameUserSettings_ini_file_button_Click);
 				// 
@@ -385,11 +383,12 @@ namespace ASAServerManager {
 				this->Edit_Game_ini_file_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Edit_Game_ini_file_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
 					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-				this->Edit_Game_ini_file_button->Location = System::Drawing::Point(772, 417);
+				this->Edit_Game_ini_file_button->Location = System::Drawing::Point(566, 417);
 				this->Edit_Game_ini_file_button->Name = L"Edit_Game_ini_file_button";
 				this->Edit_Game_ini_file_button->Size = System::Drawing::Size(126, 23);
 				this->Edit_Game_ini_file_button->TabIndex = 14;
 				this->Edit_Game_ini_file_button->Text = L"Edit Game.ini file";
+				this->Edit_Game_ini_file_button_tooltips->SetToolTip(this->Edit_Game_ini_file_button, L"The Game.ini file will open in notpad so it can be edited.");
 				this->Edit_Game_ini_file_button->UseVisualStyleBackColor = true;
 				this->Edit_Game_ini_file_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Edit_Game_ini_file_button_Click);
 				// 
@@ -398,11 +397,12 @@ namespace ASAServerManager {
 				this->Donate_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->Donate_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 					static_cast<System::Byte>(0)));
-				this->Donate_button->Location = System::Drawing::Point(986, 408);
+				this->Donate_button->Location = System::Drawing::Point(1051, 408);
 				this->Donate_button->Name = L"Donate_button";
 				this->Donate_button->Size = System::Drawing::Size(86, 32);
 				this->Donate_button->TabIndex = 15;
 				this->Donate_button->Text = L"Donate!";
+				this->Donate_button_tooltip->SetToolTip(this->Donate_button, L"Do you want to support the developer\?");
 				this->Donate_button->UseVisualStyleBackColor = true;
 				this->Donate_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Donate_button_Click);
 				// 
@@ -688,12 +688,12 @@ namespace ASAServerManager {
 				// 
 				// Displayed_Server_Crash_Logs
 				// 
-				this->Displayed_Server_Crash_Logs->Location = System::Drawing::Point(815, 78);
+				this->Displayed_Server_Crash_Logs->Location = System::Drawing::Point(841, 75);
 				this->Displayed_Server_Crash_Logs->Multiline = true;
 				this->Displayed_Server_Crash_Logs->Name = L"Displayed_Server_Crash_Logs";
 				this->Displayed_Server_Crash_Logs->ReadOnly = true;
 				this->Displayed_Server_Crash_Logs->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-				this->Displayed_Server_Crash_Logs->Size = System::Drawing::Size(257, 269);
+				this->Displayed_Server_Crash_Logs->Size = System::Drawing::Size(289, 269);
 				this->Displayed_Server_Crash_Logs->TabIndex = 44;
 				// 
 				// Manager_Status_Messages
@@ -703,7 +703,7 @@ namespace ASAServerManager {
 				this->Manager_Status_Messages->Name = L"Manager_Status_Messages";
 				this->Manager_Status_Messages->ReadOnly = true;
 				this->Manager_Status_Messages->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-				this->Manager_Status_Messages->Size = System::Drawing::Size(305, 355);
+				this->Manager_Status_Messages->Size = System::Drawing::Size(331, 355);
 				this->Manager_Status_Messages->TabIndex = 45;
 				// 
 				// info_1_button
@@ -711,13 +711,26 @@ namespace ASAServerManager {
 				this->info_1_button->Cursor = System::Windows::Forms::Cursors::Hand;
 				this->info_1_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 					static_cast<System::Byte>(0)));
-				this->info_1_button->Location = System::Drawing::Point(1015, 350);
+				this->info_1_button->Location = System::Drawing::Point(1065, 350);
 				this->info_1_button->Name = L"info_1_button";
 				this->info_1_button->Size = System::Drawing::Size(23, 23);
 				this->info_1_button->TabIndex = 46;
 				this->info_1_button->Text = L"\?";
 				this->info_1_button->UseVisualStyleBackColor = true;
 				this->info_1_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::info_1_button_Click);
+				// 
+				// Open_Backup_Folder_button
+				// 
+				this->Open_Backup_Folder_button->Cursor = System::Windows::Forms::Cursors::Hand;
+				this->Open_Backup_Folder_button->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold,
+					System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+				this->Open_Backup_Folder_button->Location = System::Drawing::Point(904, 417);
+				this->Open_Backup_Folder_button->Name = L"Open_Backup_Folder_button";
+				this->Open_Backup_Folder_button->Size = System::Drawing::Size(141, 23);
+				this->Open_Backup_Folder_button->TabIndex = 47;
+				this->Open_Backup_Folder_button->Text = L"Open Backup Folders";
+				this->Open_Backup_Folder_button->UseVisualStyleBackColor = true;
+				this->Open_Backup_Folder_button->Click += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::Open_Backup_Folder_button_Click);
 				// 
 				// ASA_Server_Manager_UI
 				// 
@@ -726,7 +739,8 @@ namespace ASAServerManager {
 				this->AutoSize = true;
 				this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(192)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
 					static_cast<System::Int32>(static_cast<System::Byte>(255)));
-				this->ClientSize = System::Drawing::Size(1084, 452);
+				this->ClientSize = System::Drawing::Size(1148, 452);
+				this->Controls->Add(this->Open_Backup_Folder_button);
 				this->Controls->Add(this->info_1_button);
 				this->Controls->Add(this->Manager_Status_Messages);
 				this->Controls->Add(this->Displayed_Server_Crash_Logs);
@@ -771,35 +785,28 @@ namespace ASAServerManager {
 				this->Controls->Add(this->Start_Server_button);
 				this->Controls->Add(this->Stop_Server_button);
 				this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
-				this->MaximumSize = System::Drawing::Size(1100, 491);
-				this->MinimumSize = System::Drawing::Size(1100, 491);
+				this->MaximumSize = System::Drawing::Size(1164, 491);
+				this->MinimumSize = System::Drawing::Size(1164, 491);
 				this->Name = L"ASA_Server_Manager_UI";
 				this->Text = L"ASA Server Manager";
 				this->Load += gcnew System::EventHandler(this, &ASA_Server_Manager_UI::ASA_Server_Manager_UI_Load);
 				this->ResumeLayout(false);
 				this->PerformLayout();
 
-				// Set the mouse hoverover tooltips on few buttons
-				System::Windows::Forms::ToolTip ^ Edit_Game_ini_file_button_tooltips = gcnew System::Windows::Forms::ToolTip();
-				Edit_Game_ini_file_button_tooltips->SetToolTip(Edit_Game_ini_file_button, "The Game.ini file will open in notpad so it can be edited.");
-
-				System::Windows::Forms::ToolTip^ Edit_GameUserSettings_ini_file_button_tooltip = gcnew System::Windows::Forms::ToolTip();
-				Edit_GameUserSettings_ini_file_button_tooltip->SetToolTip(Edit_GameUserSettings_ini_file_button, "The GameUserSettings.ini file will open in notpad so it can be edited.");
-			
-				System::Windows::Forms::ToolTip^ Donate_button_tooltip = gcnew System::Windows::Forms::ToolTip();
-				Donate_button_tooltip->SetToolTip(Donate_button, "Do you want to support the developer?");
-
-				System::Windows::Forms::ToolTip^ Create_ASA_Server_Backup_Files_button_tooltip = gcnew System::Windows::Forms::ToolTip();
-				Create_ASA_Server_Backup_Files_button_tooltip->SetToolTip(Create_ASA_Server_Backup_Files_button, "Before creating a server backup it best to stop your server due to it could couse lag on the server and it's a possibility it can corrupt your back up files!");
-			
 			}
 		#pragma endregion
 		private: System::Void ASA_Server_Manager_UI_Load(System::Object^ sender, System::EventArgs^ e) {
 			// Check if the config file exists and if it does not then create it
 			if (!Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
 				// Create the default settings and this only runs if the config file does not exist
-				Create_Config();
-				// Set the default values for the settings in the config file if the config file does not exist
+				XML::XML_Handler::Create_XML_Config();
+				if (Functions::Function_Handler::Check_If_File_Exists("ASA_Manager_Config\\ASA_Server_Manager_Settings.xml")) {
+					Manager_Status_Message("The ASA Server Manager config file was created successfully!");
+				}
+				else {
+					Manager_Status_Message("The ASA Server Manager encountered a unknown error while trying to create the ASA Server Manager config file!");
+				}
+				// Set the default values for the settings in the config file if the config file does not exist yet
 				RCON_Enable_comboBox->SelectedItem = "Off";
 				Crossplay_comboBox->SelectedItem = L"Crossplay Off";
 				Anti_Cheat_comboBox->SelectedItem = L"Battle Eye On";
@@ -810,6 +817,27 @@ namespace ASAServerManager {
 				// Check to see if a ASA server is already running when opeing the ASA Server Manager and if it is then start the timer
 				if (Functions::Function_Handler::Check_If_ASA_Server_Is_Running()) {
 					Start_Server_Check_Timer();
+				}
+				else {
+					if (System::IO::File::Exists(Server_Install_Folder_textBox->Text + "\\ShooterGame\\Saved\\Config\\WindowsServer\\GameUserSettings.ini")) {
+						System::String^ RCON_Setting;
+						if (RCON_Enable_comboBox->SelectedItem->ToString() == "On") {
+							RCON_Setting = "True";
+						}
+						else {
+							RCON_Setting = "False";
+						}
+
+						cli::array<System::String^>^ targetLines = gcnew cli::array<System::String^>(2);
+						targetLines[0] = "RCONPort=27020";
+						targetLines[1] = "RCONEnabled=True";
+
+						cli::array<System::String^>^ newLines = gcnew cli::array<System::String^>(2);
+						newLines[0] = "RCONPort=" + RCON_Port_textBox->Text;
+						newLines[1] = "RCONEnabled=" + RCON_Setting;
+
+						INI::INI_Handler::EditLineInFile(Server_Install_Folder_textBox->Text + "\\ShooterGame\\Saved\\Config\\WindowsServer", targetLines, newLines);
+					}
 				}
 			}
 		}
@@ -823,7 +851,7 @@ namespace ASAServerManager {
 				ShellExecute(NULL, L"open", L"notepad.exe", wstr.c_str(), NULL, SW_SHOWNORMAL);
 			}
 			else {
-				Manager_Status_Message("The " + ini_Path + " file dose not exists!");
+				Manager_Status_Message("The " + ini_Path + " file dose not exists! \r\nStart your "  + Server_Name_textBox->Text + " ASA server first so that the file gets created by the ASA server!");
 			}
 		}
 		private: System::Void Donate_button_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -833,7 +861,8 @@ namespace ASAServerManager {
 			Functions::Function_Handler::Open_curseforge_Website();
 		}
 		private: System::Void Save_ASA_Manager_Config_button_Click(System::Object^ sender, System::EventArgs^ e) {
-			Update_Config();
+			System::String^ result = XML::XML_Handler::Update_XML_Config(Server_Install_Folder_textBox->Text, Max_Players_textBox->Text, Server_Name_textBox->Text, Server_Password_textBox->Text, Admin_Password_textBox->Text, dynamic_cast<String^>(Map_comboBox->SelectedItem), dynamic_cast<String^>(Anti_Cheat_comboBox->SelectedItem), dynamic_cast<String^>(Crossplay_comboBox->SelectedItem), Mods_textBox->Text, dynamic_cast<String^>(RCON_Enable_comboBox->SelectedItem), RCON_Port_textBox->Text);
+			Manager_Status_Message("The ASA Server Manager config file was updated successfully and the " + result + "!");
 		}
 		private: System::Void Install_Update_ASA_Server_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			Manager_Status_Message(Functions::Function_Handler::Download_SteamCMD(Server_Install_Folder_textBox->Text));
@@ -871,7 +900,7 @@ namespace ASAServerManager {
 		private: System::Void ASA_Server_Manager_UI::backupThreadFunction(System::Object^ obj)
 		{
 			// Retrieve the parameters from obj
-			array<System::Object^>^ params = safe_cast<array<System::Object^>^>(obj);
+			cli::array<System::Object^>^ params = safe_cast<cli::array<System::Object^>^>(obj);
 			ASA_Server_Manager_UI^ uiInstance = safe_cast<ASA_Server_Manager_UI^>(params[0]);
 			std::string folderPath = marshal_as<std::string>(params[1]->ToString());
 
@@ -881,7 +910,6 @@ namespace ASAServerManager {
 			// Update the UI with the result
 			uiInstance->Manager_Status_Message(result);
 		}
-
 		private: System::Void Create_ASA_Server_Backup_Files_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			System::Windows::Forms::DialogResult result = MessageBox::Show("It is best to stop your server if it is running to create a server backup because it could cause lag and it's possible the backup files could get corrupted if the server is running. \r\n\r\nDo you want to proceed?", "Create Server Backup Warning", MessageBoxButtons::YesNo, MessageBoxIcon::Warning);
 			if (result == System::Windows::Forms::DialogResult::Yes) {
@@ -889,7 +917,7 @@ namespace ASAServerManager {
 				std::string folderPath = marshal_as<std::string>(Server_Install_Folder_textBox->Text);
 
 				// Create an array of parameters to pass to the thread function
-				array<System::Object^>^ params = gcnew array<System::Object^>(2);
+				cli::array<System::Object^>^ params = gcnew cli::array<System::Object^>(2);
 				params[0] = this;
 				params[1] = gcnew System::String(folderPath.c_str());
 
@@ -911,5 +939,16 @@ namespace ASAServerManager {
 		private: System::Void info_1_button_Click(System::Object^ sender, System::EventArgs^ e) {
 			MessageBox::Show("This is a timer in till the ASA Server Manager checks if your ASA server has crashed and this will start automaticlly when you click the Start Server button. If it detects that your server has crashed or if it's Not Responding it will temp to restart your ASA server automaticlly. The Server Crashed Check will check your ASA server every 2 minutes to check if your server status is running normally.", "Server Crashed Check", MessageBoxButtons::OK, MessageBoxIcon::Information, MessageBoxDefaultButton::Button1);
 		}
-	};
+	private: System::Void Open_Backup_Folder_button_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (Functions::Function_Handler::Check_If_Folder_Exists("\\ASA_Manager_Config\\Server_backups")) {
+			System::String^ exepath = System::Reflection::Assembly::GetExecutingAssembly()->Location;
+			System::String^ directoryPath = System::IO::Path::GetDirectoryName(exepath);
+			std::wstring wideFolderPath = msclr::interop::marshal_as<std::wstring>(directoryPath + "\\ASA_Manager_Config\\Server_backups\\");
+			ShellExecute(nullptr, L"open", wideFolderPath.c_str(), nullptr, nullptr, SW_SHOWDEFAULT);
+		}
+		else {
+			Manager_Status_Message("The backup directory doesn't exists due to the Create ASA Server Backup Files button was never clicked!");
+		}
+	}
+};
 }
