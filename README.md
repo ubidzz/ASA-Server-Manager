@@ -30,6 +30,6 @@ If your windows computer is 64bit download the x64 zip file
 
 ### When you run the ASA Server Manager it will create a ASA_Manager_Config folder into the directory where the ASA Server Manager.exe is located at. The folder contains the ASA_Server_Manager_Settings.xml file, SteamCMD folder, Server_backups, ASA_Start_Server.bat file and SteamCMD_Install_ASA_Server.bat file.
 
-### The EXE file was built in c++/cli .Net framework v4.7.2
+### The EXE file was built in c++/clr .Net framework v4.7.2
 
 ### You can freely share this program with people but you can not take clame of owning it or sell it. I am trying to get a code signing certificate for this program but due to that i am not a business it is very hard to get a code signing certificate and they are expensive to buy.
