@@ -819,6 +819,7 @@ namespace ASAServerManager {
 					Start_Server_Check_Timer();
 				}
 				else {
+					/*
 					if (System::IO::File::Exists(Server_Install_Folder_textBox->Text + "\\ShooterGame\\Saved\\Config\\WindowsServer\\GameUserSettings.ini")) {
 						System::String^ RCON_Setting;
 						if (RCON_Enable_comboBox->SelectedItem->ToString() == "On") {
@@ -837,7 +838,7 @@ namespace ASAServerManager {
 						newLines[1] = "RCONEnabled=" + RCON_Setting;
 
 						INI::INI_Handler::EditLineInFile(Server_Install_Folder_textBox->Text + "\\ShooterGame\\Saved\\Config\\WindowsServer", targetLines, newLines);
-					}
+					}*/
 				}
 			}
 		}
