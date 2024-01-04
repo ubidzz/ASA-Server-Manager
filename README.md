@@ -17,6 +17,8 @@ If your windows computer is 64bit download the x64 zip file
 > Due to wildcard releasing a update that made it so you can't change the ports it's listing on the manager uses the default ports of 7777 and 27015
 > 
 > The only thing that don't work in the ASA Server Manager right now is the RCON stuff.
+>
+> When you run the ASA Server Manager file windows will give you a warning to allow the program to run due to it doesn't have a code signing certificate.
 
 ## How to use the ASA Server Manager
 1. download the zip file
@@ -30,3 +32,4 @@ If your windows computer is 64bit download the x64 zip file
 
 ### The EXE file was built in c++/cli .Net framework v4.7.2
 
+### You can freely share this program with people but you can not take clame of owning it or sell it. I am trying to get a code signing certificate for this program but due to that i am not a business it is very hard to get a code signing certificate and they are expensive to buy.
