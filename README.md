@@ -15,6 +15,7 @@ The manager will do a server check every 2 minutes so see if your server has cra
 
 > [!IMPORTANT]
 > Due to wildcard releasing a update that made it so you can't change the ports it's listing on the manager uses the default ports of 7777 and 27015
+> 
 > The only thing that don't work in the ASA Server Manager right now is the RCON stuff.
 
 ## How to use the ASA Server Manager
