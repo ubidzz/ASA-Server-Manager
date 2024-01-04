@@ -28,7 +28,7 @@ If your windows computer is 64bit download the x64 zip file
 5. Click the Start Server button.
 6. Your finish enjoy.
 
-### When you run the ASA Server Manager it will create a ASA_Manager_Config folder into the directory where the ASA Server Manager.exe is located at. The folder contains the ASA_Server_Manager_Settings.xml file, SteamCMD folder, Server_backups, ASA_Start_Server.bat file and SteamCMD_Install_ASA_Server.bat file.
+### When you run the ASA Server Manager it will create a ASA_Manager_Config folder into the directory where the ASA Server Manager.exe is located at. The folder contains the ASA_Server_Manager_Settings.xml file, SteamCMD folder, Server_backups folder, ASA_Start_Server.bat file and SteamCMD_Install_ASA_Server.bat file.
 
 ### The EXE file was built in c++/clr .Net framework v4.7.2
 
