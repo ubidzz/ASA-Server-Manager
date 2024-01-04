@@ -8,13 +8,10 @@ If your windows computer is 32bit download the x86 zip file
 If your windows computer is 64bit download the x64 zip file
 [ASA Server Manager x64](https://github.com/ubidzz/ASA-Server-Manager/raw/master/x64.zip)
 
-The manager has a builtin auto restart server if the server ever crashes.
-
-Easy to use create server backups.
-
-The manager will automatically create the server Game.ini file for the server.
-
-The manager will do a server check every 2 minutes so see if your server has crashed or stop responding.
+* The manager has a builtin auto restart server if the server ever crashes.
+* Easy to use create server backups.
+* The manager will automatically create the server Game.ini file for the server.
+* The manager will do a server check every 2 minutes so see if your server has crashed or stop responding.
 
 > [!IMPORTANT]
 > Due to wildcard releasing a update that made it so you can't change the ports it's listing on the manager uses the default ports of 7777 and 27015
