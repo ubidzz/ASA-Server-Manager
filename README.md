@@ -32,4 +32,7 @@ If your windows computer is 64bit download the x64 zip file
 
 ### The EXE file was built in c++/clr .Net framework v4.7.2
 
-### You can freely share this program with people but you can not take clame of owning it or sell it. I am trying to get a code signing certificate for this program but due to that i am not a business it is very hard to get a code signing certificate and they are expensive to buy.
+# License
+ASA Server Manager is licensed under the GPL 3 License. See LICENSE for more information.
+
+You can freely share this program with people but you can not take clame of owning it or sell it. I am trying to get a code signing certificate for this program but due to that i am not a business it is very hard to get a code signing certificate and they are expensive to buy.
