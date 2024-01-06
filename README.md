@@ -3,10 +3,10 @@
 ![ASA Server Manager](https://i.ibb.co/3R3Zngv/ASA-Server-Manager.png)
 
 If your windows computer is 32bit download the x86 zip file
-[ASA Server Manager x86](https://github.com/ubidzz/ASA-Server-Manager/raw/master/ASA Server Manager x86.zip)
+[ASA Server Manager x86](https://github.com/ubidzz/ASA-Server-Manager/raw/master/ASA_Server_Manager_x86.zip)
 
 If your windows computer is 64bit download the x64 zip file
-[ASA Server Manager x64](https://github.com/ubidzz/ASA-Server-Manager/raw/master/ASA Server Manager x64.zip)
+[ASA Server Manager x64](https://github.com/ubidzz/ASA-Server-Manager/raw/master/ASA_Server_Manager_x64.zip)
 
 * The manager has a builtin auto restart server if the server ever crashes.
 * Easy to use create server backups.
